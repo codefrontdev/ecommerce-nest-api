@@ -9,6 +9,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { EmailService } from './shared/email.service';
 import { ProductsModule } from './products/products.module';
 import { CloudinaryService } from './shared/cloudinary.service';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { CloudinaryService } from './shared/cloudinary.service';
     AuthModule,
   ],
 
-  controllers: [],
+  controllers: [AppController],
   providers: [EmailService, JwtService, CloudinaryService],
   exports: [EmailService, JwtService, CloudinaryService],
 })
