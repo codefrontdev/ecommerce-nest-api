@@ -88,8 +88,20 @@ export class AuthService {
       deviceInfo.id,
     );
 
-    res.cookie('accessToken', accessToken, { httpOnly: true });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true });
+    const isProduction = this.config.get<string>('NODE_ENV') === 'production';
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: isProduction, // ضروري للإنتاج لأن الكوكيز لا تُرسل إلا عبر HTTPS
+      sameSite: isProduction ? 'none' : 'lax', // None لو كانت الواجهة على دومين مختلف
+      maxAge: 1000 * 60 * 15, // مثلًا: 15 دقيقة
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7, // مثلًا: أسبوع
+    });
     if (user.failedAttempts > 3) {
       const lockDuration = 15 * 60 * 1000;
       const lockUntil = new Date(Date.now() + lockDuration);
@@ -217,7 +229,12 @@ export class AuthService {
         secret: this.config.get<string>('JWT_SECRET'),
       });
 
-      res.cookie('accessToken', accessToken, { httpOnly: true });
+      res.cookie('accessToken', accessToken, { 
+        httpOnly: true,
+        secure: this.config.get<string>('NODE_ENV') === 'production',
+        sameSite: 'none',
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      });
 
       return { success: true, accessToken, user };
     } catch (error) {
