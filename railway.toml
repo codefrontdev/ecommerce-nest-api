@@ -1,0 +1,13 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm install --omit=dev --legacy-peer-deps && npm run build"
+
+[build.phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[deploy]
+startCommand = "node dist/main"
+
+[deploy.engines]
+node = "20.14.0"  # تأكد من توافق النسخة مع بيئة Nixpacks
+npm = "10.x"  # تأكد من توافق npm مع النسخة التي تحتاجها

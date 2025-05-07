@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["nodejs_20"]  # تأكد من أن هذه الحزمة متوافقة مع Node.js 20
+
+[phases.build]
+cmds = [
+  "npm install --omit=dev --legacy-peer-deps",  # تثبيت الحزم بدون حزم التطوير
+  "npm run build"  # بناء المشروع
+]
+
+[start]
+cmd = "node dist/main"  # تشغيل التطبيق بعد البناء
