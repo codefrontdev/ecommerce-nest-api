@@ -18,7 +18,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
               url: databaseUrl,
               ssl: { rejectUnauthorized: false },
               autoLoadEntities: true,
-              synchronize: true,
+              synchronize: false, // ⛔️ لا تفعل هذا في الإنتاج
+              logging: false,
             }
           : {
               type: 'postgres',
@@ -29,6 +30,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
               database: configService.get<string>('DB_NAME', 'ecommerce_db'),
               autoLoadEntities: true,
               synchronize: true,
+              logging: true,
             };
       },
     }),
