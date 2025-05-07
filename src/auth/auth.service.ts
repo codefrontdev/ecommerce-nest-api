@@ -11,16 +11,17 @@ import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/entites/user.entity';
 import { SignInUserDto } from './dto/signin-user.dto';
 import { UsersService } from 'src/users/users.service';
-import { EmailService } from 'src/shared/email.service';
+import { EmailService } from 'src/@core/shared/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { DeviceHistoryService } from 'src/deviceHistory/device-history.service';
-import { DeviceUtils } from 'src/utils/device-utils';
+import { DeviceUtils } from 'src/@core/utils/device-utils';
 import axios from 'axios';
-import { RabbitMQService } from 'src/shared/rabbitmq.service';
+import { RabbitMQService } from 'src/@core/shared/rabbitmq.service';
 import { Redis } from 'ioredis';
-import { JWTPayloadType } from 'src/utils/types';
+import { JWTPayloadType } from 'src/@core/utils/types';
 import { GetByIdDto } from 'src/products/dto/get-by-id.dto';
+import { UserRole } from 'src/@core/utils/enums';
 
 @Injectable()
 export class AuthService {
@@ -36,23 +37,30 @@ export class AuthService {
     @InjectRepository(User) private readonly authRepository: Repository<User>,
   ) {}
 
+  async signUp(signUpUserDto: any) {
+    // signUpUserDto.password = await bcrypt.hash(signUpUserDto.password, 10);
+    // await this.emailService.sendWelcomeEmail(signUpUserDto.email);
+
+    return this.userRepository.create(signUpUserDto);
+  }
+
   async signIn(signInUserDto: SignInUserDto, req: Request, res: Response) {
     const user = await this.userRepository.findOneByEmail(signInUserDto.email);
 
-    if (user.role === 'user') {
+    if (user.role === UserRole.CUSTOMER) {
       throw new ForbiddenException(
         'You are not allowed to access this resource',
       );
     }
 
-    if (
-      user?.lastFailedAttempt &&
-      new Date(user?.lastFailedAttempt) > new Date()
-    ) {
-      throw new UnauthorizedException(
-        `Your account is temporarily locked. Please try again after ${user.lastFailedAttempt}`,
-      );
-    }
+    // if (
+    //   user?.lastFailedAttempt &&
+    //   new Date(user?.lastFailedAttempt) > new Date()
+    // ) {
+    //   throw new UnauthorizedException(
+    //     `Your account is temporarily locked. Please try again after ${user.lastFailedAttempt}`,
+    //   );
+    // }
     await this.checkIfAlreadyLoggedIn(req, res);
 
     if (
@@ -61,7 +69,7 @@ export class AuthService {
         (await this.isPasswordValid(signInUserDto.password, user.password))
       )
     ) {
-      await this.userRepository.update(user.id, {
+      await this.userRepository.updateUser(user.id, {
         failedAttempts: user.failedAttempts + 1,
         lastFailedAttempt: new Date(),
       });
@@ -72,11 +80,12 @@ export class AuthService {
       throw new ForbiddenException('Your account is not active');
     }
 
-    await this.collectDeviceInfo(req);
+    const deviceInfo = await this.collectDeviceInfo(req, user);
 
     const { accessToken, refreshToken } = await this.createTokens(
       user,
       parseInt(req.ip || '0', 10) || null,
+      deviceInfo.id,
     );
 
     res.cookie('accessToken', accessToken, { httpOnly: true });
@@ -85,7 +94,7 @@ export class AuthService {
       const lockDuration = 15 * 60 * 1000;
       const lockUntil = new Date(Date.now() + lockDuration);
 
-      await this.userRepository.update(user.id, {
+      await this.userRepository.updateUser(user.id, {
         failedAttempts: 0,
         lastFailedAttempt: lockUntil,
       });
@@ -108,18 +117,20 @@ export class AuthService {
     if (!decoded) {
       throw new UnauthorizedException('Invalid token');
     }
+    
     const user = await this.userRepository.findOne(decoded.id);
+    
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
     if (user.status === 'inactive') {
       throw new ForbiddenException('Your account is not active');
     }
-    if (user.lastFailedAttempt && user.lastFailedAttempt > new Date()) {
-      throw new ForbiddenException(
-        'Your account is temporarily locked. Please try again later.',
-      );
-    }
+    // if (user.lastFailedAttempt && user.lastFailedAttempt > new Date()) {
+    //   throw new ForbiddenException(
+    //     'Your account is temporarily locked. Please try again later.',
+    //   );
+    // }
     return { user, decoded };
   }
 
@@ -137,7 +148,7 @@ export class AuthService {
     return await bcrypt.compare(inputPassword, storedPassword);
   }
 
-  async collectDeviceInfo(req: Request) {
+  async collectDeviceInfo(req: Request, user: User) {
     const userAgent = req.headers['user-agent'] || '';
     const ipAddress = req.ip;
     const deviceType = DeviceUtils.detectDeviceType(req);
@@ -146,12 +157,23 @@ export class AuthService {
 
     const location = await this.getGeolocation(ipAddress || '');
 
-    return { userAgent, ipAddress, deviceType, os, browser, location };
+    const deviceHistory = await this.deviceHistory.createDeviceHistory(
+      user,
+      ipAddress || 'Unknown IP',
+      userAgent,
+      deviceType,
+      os,
+      browser,
+      location,
+    );
+
+    return deviceHistory;
   }
 
-  async createTokens(user: User, ipAddress: number | null) {
+  async createTokens(user: User, ipAddress: number | null, deviceId: string) {
     const payload: JWTPayloadType = {
       id: user.id,
+      deviceId: deviceId.toString(),
       role: user.role,
     };
 

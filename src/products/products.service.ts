@@ -15,7 +15,7 @@ import {
 } from 'typeorm';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetByIdDto } from './dto/get-by-id.dto';
-import { CloudinaryService } from 'src/shared/cloudinary.service';
+import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
 
 @Injectable()
 export class ProductsService {
@@ -25,11 +25,7 @@ export class ProductsService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async create(
-    createProductDto: CreateProductDto,
-  ) {
-  
-    
+  async create(createProductDto: CreateProductDto) {
     return this.productRepository.save(createProductDto);
   }
   async findAll(filter: {
@@ -54,7 +50,6 @@ export class ProductsService {
       minPrice,
       maxPrice,
     } = filter;
-    console.log(filter);
 
     // حيث الشروط
     const whereConditions: any = {};
@@ -91,6 +86,8 @@ export class ProductsService {
       where: whereConditions,
       skip: (page - 1) * pageSize,
       take: pageSize,
+      relations: ['category', 'brand', 'reviews'],
+
     });
 
     // إحصاء الحالات (مثل available و disabled)
@@ -106,8 +103,7 @@ export class ProductsService {
     groupedCounts.forEach((row) => {
       countsMap[row.status] = parseInt(row.count);
     });
-
-    console.log('red all');
+    
 
     // إرجاع النتيجة
     return {
@@ -116,6 +112,7 @@ export class ProductsService {
       products,
       total,
       page,
+      totalPages: Math.ceil(total / pageSize),
       lastPage: Math.ceil(total / pageSize),
       currentPage: page,
       nextPage: page < Math.ceil(total / pageSize) ? page + 1 : null,
@@ -140,7 +137,6 @@ export class ProductsService {
       countsMap[row.status] = parseInt(row.count);
     });
 
-    console.log('red status count');
     return {
       available: countsMap['available'] || 0,
       disabled: countsMap['disabled'] || 0,
@@ -161,7 +157,22 @@ export class ProductsService {
     };
   }
 
-  update({ id }: GetByIdDto, updateProductDto: UpdateProductDto) {
+  async update({ id }: GetByIdDto, updateProductDto: UpdateProductDto) {
+    const product = await this.findOne(id);
+
+    if (product.data.image?.publicId) {
+      this.cloudinaryService.deleteImage(
+        product.data.image.publicId,
+        'products',
+      );
+    }
+
+    if (product.data.images) {
+      product.data.images.forEach((image) => {
+        this.cloudinaryService.deleteImage(image.publicId, 'products');
+      });
+    }
+
     return this.productRepository.update(id, updateProductDto);
   }
 
@@ -169,9 +180,15 @@ export class ProductsService {
     const prod = await this.findOne(id);
 
     await this.cloudinaryService.deleteImage(id, 'products');
-    prod.data.images.forEach((image) => {
-      this.cloudinaryService.deleteImage(image.publicId, 'products');
-    })
+    if (prod.data.image?.publicId) {
+      this.cloudinaryService.deleteImage(prod.data.image.publicId, 'products');
+    }
+
+    if (prod.data.images) {
+      prod.data.images.forEach((image) => {
+        this.cloudinaryService.deleteImage(image.publicId, 'products');
+      });
+    }
     const deleted = await this.productRepository.delete(id);
 
     if (deleted.affected !== 1) {

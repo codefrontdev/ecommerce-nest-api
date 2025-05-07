@@ -1,6 +1,6 @@
 import { DeviceHistory } from 'src/deviceHistory/entites/device-history.entity';
 import { Review } from 'src/reviews/entites/review.entity';
-import { UserRole, UserStatus } from 'src/utils/enums';
+import { UserRole, UserStatus } from 'src/@core/utils/enums';
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +10,8 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
+import { Order } from 'src/orders/entites/order.entity';
+import { Comment } from 'src/comments/entites/comment.entity';
 
 @Entity()
 @Unique(['email'])
@@ -18,7 +20,10 @@ export class User {
   id: string;
 
   @Column()
-  name: string;
+  firstName: string;
+
+  @Column()
+  lastName: string;
 
   @Column()
   email: string;
@@ -30,22 +35,43 @@ export class User {
     type: 'enum',
     enum: [
       UserRole.ADMIN,
-      UserRole.USER,
+      UserRole.CUSTOMER,
       UserRole.SUPER_ADMIN,
       UserRole.CONTENT_ADMIN,
     ],
-    default: UserRole.USER,
+    default: UserRole.CUSTOMER,
   })
   role: UserRole;
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 
   @Column({ nullable: true })
   phone: string;
 
   @Column({ nullable: true })
-  address: string;
+  country: string;
 
   @Column({ nullable: true })
-  profilePicture: string;
+  city: string;
+
+  @Column({ nullable: true })
+  postalCode: string;
+
+  @Column({ nullable: true })
+  website: string;
+
+  @Column({ nullable: true })
+  about: string;
+
+  @Column({ nullable: true })
+  address: string;
+
+  @Column('simple-json', { default: { url: '', publicId: null } })
+  profilePicture: {
+    publicId: string;
+    url: string;
+  };
 
   @Column({
     nullable: true,
@@ -65,12 +91,15 @@ export class User {
   })
   deviceHistory: DeviceHistory[];
 
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }

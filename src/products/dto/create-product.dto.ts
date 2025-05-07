@@ -19,7 +19,11 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsString()
-  category: string;
+  brandId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  categoryId: string;
 
   @IsArray()
   @IsString({ each: true })
@@ -76,10 +80,16 @@ export class CreateProductDto {
   orders: number;
 
   @IsOptional()
-  image?: any;
+  image?: {
+    url: string;
+    publicId: string;
+  };
 
   @IsOptional()
-  images?: any;
+  images?: {
+    url: string;
+    publicId: string;
+  }[];
 
   @IsOptional()
   @IsArray()

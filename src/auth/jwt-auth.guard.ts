@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { CURRENT_USER_KEY } from 'src/utils/constants';
+import { CURRENT_USER_KEY } from 'src/@core/utils/constants';
 import { AuthService } from './auth.service';
-import { JWTPayloadType } from 'src/utils/types';
-import { UserRole } from 'src/utils/enums';
+import { JWTPayloadType } from 'src/@core/utils/types';
+import { UserRole } from 'src/@core/utils/enums';
 import { Reflector } from '@nestjs/core';
 import { User } from 'src/users/entites/user.entity';
 
@@ -41,8 +41,11 @@ export class JwtAuthGuard implements CanActivate {
     if (!refreshToken) {
       return false;
     }
+    
     try {
       const result = await this.authService.verifyToken(accessToken);
+
+      
       if (!result) {
         return false;
       }

@@ -12,13 +12,18 @@ import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { JWTPayloadType } from 'src/utils/types';
+import { JWTPayloadType } from 'src/@core/utils/types';
 import { Roles } from './decorators/user-role.decorator';
-import { UserRole } from 'src/utils/enums';
+import { UserRole } from 'src/@core/utils/enums';
 
-@Controller('auth')
+@Controller('/auth/')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
+  
+  @Post('signup')
+  signUp(@Body() signUpUserDto: any) {
+    return this.authService.signUp(signUpUserDto);
+  }
 
   @Post('signin')
   signIn(
@@ -35,7 +40,6 @@ export class AuthController {
   myAccount(@CurrentUser() payload: JWTPayloadType) {
     return this.authService.myAccount({ id: payload.id });
   }
-  
 
   @Get('signout')
   @Roles(UserRole.ADMIN, UserRole.CONTENT_ADMIN, UserRole.SUPER_ADMIN)

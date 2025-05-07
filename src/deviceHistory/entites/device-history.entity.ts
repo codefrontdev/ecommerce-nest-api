@@ -8,10 +8,10 @@ import {
 } from 'typeorm';
 import { User } from 'src/users/entites/user.entity';
 
-@Entity()
+@Entity('device_history')
 export class DeviceHistory {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => User, (user) => user.deviceHistory)
   @JoinColumn({ name: 'userId' })
