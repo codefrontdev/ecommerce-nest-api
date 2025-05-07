@@ -18,8 +18,8 @@ import { UserRole } from 'src/@core/utils/enums';
 
 @Controller('/auth/')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
-  
+  constructor(private readonly authService: AuthService) {}
+
   @Post('signup')
   signUp(@Body() signUpUserDto: any) {
     return this.authService.signUp(signUpUserDto);
