@@ -10,25 +10,26 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const isProd = configService.get<string>('NODE_ENV') === 'production';
+        const databaseUrl = configService.get<string>('DB_URL');
 
-        return {
-          type: 'postgres',
-          ...(isProd
-            ? {
-                url: configService.get<string>('DATABASE_URL'),
-                ssl: { rejectUnauthorized: false },
-              }
-            : {
-                host: configService.get<string>('DB_HOST', 'localhost'),
-                port: configService.get<number>('DB_PORT', 5432),
-                username: configService.get<string>('DB_USER', 'postgres'),
-                password: configService.get<string>('DB_PASSWORD', 'password'),
-                database: configService.get<string>('DB_NAME', 'ecommerce_db'),
-              }),
-          autoLoadEntities: true,
-          synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true),
-          logging: configService.get<boolean>('DB_LOGGING', false),
-        };
+        return isProd
+          ? {
+              type: 'postgres',
+              url: databaseUrl,
+              ssl: { rejectUnauthorized: false },
+              autoLoadEntities: true,
+              synchronize: true,
+            }
+          : {
+              type: 'postgres',
+              host: configService.get<string>('DB_HOST', 'localhost'),
+              port: configService.get<number>('DB_PORT', 5432),
+              username: configService.get<string>('DB_USER', 'postgres'),
+              password: configService.get<string>('DB_PASSWORD', 'password'),
+              database: configService.get<string>('DB_NAME', 'ecommerce_db'),
+              autoLoadEntities: true,
+              synchronize: true,
+            };
       },
     }),
   ],
