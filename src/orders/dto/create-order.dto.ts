@@ -1,6 +1,6 @@
 // src/orders/dto/create-order.dto.ts
 import { IsArray, IsDecimal, IsNotEmpty } from 'class-validator';
-import { OrderItem } from '../entites/order-item.entity';
+import { OrderItem } from '../entities/order-item.entity';
 import { Transform } from 'class-transformer';
 import { CreatePaymentDto } from 'src/payments/dto/create-payment.dto';
 import { CreateOrderItemDto } from './create-item.dto';
@@ -26,5 +26,5 @@ export class CreateOrderDto {
   @IsNotEmpty()
   items: CreateOrderItemDto[];
 
-  paymentDetails: CreatePaymentDto
+  paymentDetails: CreatePaymentDto;
 }

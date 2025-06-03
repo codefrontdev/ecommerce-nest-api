@@ -1,7 +1,6 @@
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { Review } from "./entites/review.entity";
-
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Review } from './entities/review.entity';
 
 @Module({
   providers: [],

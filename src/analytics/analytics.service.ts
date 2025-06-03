@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Order, OrderStatus } from 'src/orders/entites/order.entity';
-import { Product } from 'src/products/entites/product.entity';
+import { Order, OrderStatus } from 'src/orders/entities/order.entity';
+import { Product } from 'src/products/entities/product.entity';
 import { Between, Repository } from 'typeorm';
 import { Analytics } from './entities/analytics.entity';
-import { DeviceHistory } from 'src/deviceHistory/entites/device-history.entity';
+import { DeviceHistory } from 'src/deviceHistory/entities/device-history.entity';
 import { SalesData } from 'src/@core/utils/types';
 @Injectable()
 export class AnalyticsService {

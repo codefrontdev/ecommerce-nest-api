@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTrackingDto } from './dto/create-tracking.dto';
-import { Order } from 'src/orders/entites/order.entity';
-import { Tracking } from './entites/tracking.entity';
+import { Order } from 'src/orders/entities/order.entity';
+import { Tracking } from './entities/tracking.entity';
 import { CreateStepDto } from './dto/create-step.dto';
 
 @Injectable()
@@ -62,8 +62,7 @@ export class TrackingService {
   }
 
   // إضافة خطوة جديدة للتتبع
-  async addStepToTracking(
-    id: string, createStepDto: CreateStepDto) {
+  async addStepToTracking(id: string, createStepDto: CreateStepDto) {
     const tracking = await this.trackingRepository.findOne({
       where: { order: { id: createStepDto.orderId }, id: id },
     });
@@ -75,7 +74,7 @@ export class TrackingService {
     const now = new Date();
     const newStep = {
       status: createStepDto.status,
-      description:createStepDto.description,
+      description: createStepDto.description,
       date: now.toISOString().split('T')[0],
       time: now.toLocaleTimeString(),
     };

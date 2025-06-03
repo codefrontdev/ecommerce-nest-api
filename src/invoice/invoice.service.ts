@@ -5,7 +5,7 @@ import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { Invoice } from './entities/invoice.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Order } from 'src/orders/entites/order.entity';
+import { Order } from 'src/orders/entities/order.entity';
 import * as QRCode from 'qrcode';
 import { OrdersService } from 'src/orders/orders.service';
 import puppeteer from 'puppeteer';
@@ -55,7 +55,7 @@ export class InvoiceService {
     const estimatedTax = order.data?.total && order.data.total * 0.05;
     const totalAmount =
       subTotal - +discountValue + shippingCharge + estimatedTax;
-    
+
     const pdfBuffer = await this.generateInvoicePDF({
       ...invoiceData,
       customerName: order.data.user.firstName + ' ' + order.data.user.lastName,
@@ -70,12 +70,12 @@ export class InvoiceService {
       estimatedTax,
       totalAmount,
     });
-    
 
     const qrCode = await QRCode.toDataURL(
       JSON.stringify({
         ...invoiceData,
-        customerName: order.data.user.firstName + ' ' + order.data.user.lastName,
+        customerName:
+          order.data.user.firstName + ' ' + order.data.user.lastName,
         customerEmail: order.data.user.email,
         customerPhone: order.data.user.phone,
         customerAddress: order.data.user.address,
@@ -164,7 +164,7 @@ export class InvoiceService {
             <tbody>
               ${orderData.items
                 .map(
-                  (item) =>`
+                  (item) => `
                 <tr>
                   <td>${item.name}</td>
                   <td>${item.quantity}</td>
@@ -207,7 +207,7 @@ export class InvoiceService {
   }
 
   async sendInvoice(invoiceData) {
-    const { orderId, message } = invoiceData
+    const { orderId, message } = invoiceData;
     const order = await this.ordersService.findOne(orderId);
 
     const data = {
@@ -217,8 +217,8 @@ export class InvoiceService {
       pdfBuffer: order.data.invoice.invoicePDF,
       date: order.data.createdAt,
       invoiceNumber: order.data.invoice.invoiceNumber,
-      status: order.data.status
-    }
+      status: order.data.status,
+    };
     return this.emailService.sendInvoice(data);
   }
 

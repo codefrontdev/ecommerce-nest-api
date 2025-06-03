@@ -1,5 +1,5 @@
-import { User } from 'src/users/entites/user.entity';
-import { Order } from 'src/orders/entites/order.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Order } from 'src/orders/entities/order.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

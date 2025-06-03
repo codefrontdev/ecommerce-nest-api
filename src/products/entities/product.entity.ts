@@ -1,7 +1,7 @@
 import { Brand } from 'src/brands/entites/brand.entity';
 import { Category } from 'src/categories/entites/category.entity';
-import { OrderItem } from 'src/orders/entites/order-item.entity';
-import { Review } from 'src/reviews/entites/review.entity';
+import { OrderItem } from 'src/orders/entities/order-item.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -29,14 +29,14 @@ export class Product extends BaseEntity {
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 
-  @Column({default: null})
+  @Column({ default: null })
   categoryId: string;
 
   @ManyToOne(() => Brand, (brand) => brand.products)
   @JoinColumn({ name: 'brandId' })
   brand: Brand;
 
-  @Column({default: null})
+  @Column({ default: null })
   brandId: string;
 
   @Column('simple-array')

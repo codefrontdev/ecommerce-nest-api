@@ -6,7 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { User } from 'src/users/entites/user.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity('device_history')
 export class DeviceHistory {

@@ -8,7 +8,7 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { User } from 'src/users/entites/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import { DeviceHistoryService } from './device-history.service';
 import { GetByIdDto } from 'src/products/dto/get-by-id.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -56,8 +56,6 @@ export class DeviceHistoryController {
     return { success: true, data: newDeviceHistory };
   }
 
-  
-
   @Delete(':deviceId')
   @UseGuards(JwtAuthGuard)
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN)
@@ -65,7 +63,6 @@ export class DeviceHistoryController {
     @Param('deviceId') deviceId: string,
     @CurrentUser() JWTpayload: JWTPayloadType,
   ) {
-    
     const userId = JWTpayload.id;
     console.log('userId', userId);
     return this.deviceHistoryService.logoutFromDevice(deviceId, JWTpayload);

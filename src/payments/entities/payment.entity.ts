@@ -1,4 +1,4 @@
-import { Order } from 'src/orders/entites/order.entity';
+import { Order } from 'src/orders/entities/order.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -21,7 +21,7 @@ export class PaymentDetails {
   cardHolderName: string;
 
   @Column()
-  cardNumber: string; 
+  cardNumber: string;
 
   @OneToOne(() => Order, (order) => order.paymentDetails)
   @JoinColumn()

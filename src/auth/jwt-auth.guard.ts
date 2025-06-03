@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 import { JWTPayloadType } from 'src/@core/utils/types';
 import { UserRole } from 'src/@core/utils/enums';
 import { Reflector } from '@nestjs/core';
-import { User } from 'src/users/entites/user.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -41,11 +41,10 @@ export class JwtAuthGuard implements CanActivate {
     if (!refreshToken) {
       return false;
     }
-    
+
     try {
       const result = await this.authService.verifyToken(accessToken);
 
-      
       if (!result) {
         return false;
       }

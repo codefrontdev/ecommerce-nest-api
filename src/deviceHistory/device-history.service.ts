@@ -1,8 +1,12 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from 'src/users/entites/user.entity';
-import { DeviceHistory } from './entites/device-history.entity';
+import { User } from 'src/users/entities/user.entity';
+import { DeviceHistory } from './entities/device-history.entity';
 import { GetByIdDto } from 'src/products/dto/get-by-id.dto';
 import { JWTPayloadType } from 'src/@core/utils/types';
 import { UserRole } from 'src/@core/utils/enums';
@@ -24,20 +28,20 @@ export class DeviceHistoryService {
     location: string,
   ) {
     // تحقق إذا كان هناك سجل مطابق مسبقًا
-  //  const existing = await this.deviceHistoryRepository
-  //    .createQueryBuilder('device')
-  //    .leftJoin('device.user', 'user')
-  //    .where('device.ipAddress = :ipAddress', { ipAddress })
-  //    .andWhere('device.userAgent = :userAgent', { userAgent })
-  //    .andWhere('device.deviceType = :deviceType', { deviceType })
-  //    .andWhere('device.os = :os', { os })
-  //    .andWhere('device.browser = :browser', { browser })
-  //    .andWhere('user.id = :userId', { userId: user.id })
-  //    .getOne();
+    //  const existing = await this.deviceHistoryRepository
+    //    .createQueryBuilder('device')
+    //    .leftJoin('device.user', 'user')
+    //    .where('device.ipAddress = :ipAddress', { ipAddress })
+    //    .andWhere('device.userAgent = :userAgent', { userAgent })
+    //    .andWhere('device.deviceType = :deviceType', { deviceType })
+    //    .andWhere('device.os = :os', { os })
+    //    .andWhere('device.browser = :browser', { browser })
+    //    .andWhere('user.id = :userId', { userId: user.id })
+    //    .getOne();
 
-  //   if (existing) {
-  //     return existing;
-  //   }
+    //   if (existing) {
+    //     return existing;
+    //   }
 
     const deviceHistory = this.deviceHistoryRepository.create({
       user,
@@ -49,7 +53,7 @@ export class DeviceHistoryService {
       location,
     });
 
-   const result = await this.deviceHistoryRepository.save(deviceHistory);
+    const result = await this.deviceHistoryRepository.save(deviceHistory);
     console.log('result', result);
     return result;
   }

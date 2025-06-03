@@ -1,5 +1,5 @@
 // src/orders/entities/order.entity.ts
-import { User } from 'src/users/entites/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -12,8 +12,8 @@ import {
 } from 'typeorm';
 import { OrderItem } from './order-item.entity';
 import { Comment } from 'src/comments/entites/comment.entity';
-import { PaymentDetails } from 'src/payments/entites/payment.entity';
-import { Tracking } from 'src/tracking/entites/tracking.entity';
+import { PaymentDetails } from 'src/payments/entities/payment.entity';
+import { Tracking } from 'src/tracking/entities/tracking.entity';
 import { Invoice } from 'src/invoice/entities/invoice.entity';
 
 export enum OrderStatus {

@@ -1,11 +1,10 @@
-
-import {  Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Order } from './entites/order.entity';
-import { OrderItem } from './entites/order-item.entity';
+import { Order } from './entities/order.entity';
+import { OrderItem } from './entities/order-item.entity';
 import { OrdersService } from './orders.service';
-import { PaymentDetails } from 'src/payments/entites/payment.entity';
-import { Tracking } from 'src/tracking/entites/tracking.entity';
+import { PaymentDetails } from 'src/payments/entities/payment.entity';
+import { Tracking } from 'src/tracking/entities/tracking.entity';
 import { PaymentDetailsController } from 'src/payments/payments.controller';
 import { PaymentDetailsService } from 'src/payments/payments.service';
 import { OrdersController } from './orders.controller';
@@ -14,11 +13,11 @@ import { InvoiceModule } from 'src/invoice/invoice.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, OrderItem, PaymentDetails, Tracking],),
+    TypeOrmModule.forFeature([Order, OrderItem, PaymentDetails, Tracking]),
     InvoiceModule,
-    AuthModule
+    AuthModule,
   ],
-  controllers: [ OrdersController],
+  controllers: [OrdersController],
   providers: [OrdersService, PaymentDetailsService],
   exports: [OrdersService, PaymentDetailsService],
 })

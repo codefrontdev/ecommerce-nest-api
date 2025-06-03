@@ -1,4 +1,4 @@
-import { Order } from 'src/orders/entites/order.entity';
+import { Order } from 'src/orders/entities/order.entity';
 import {
   Column,
   Entity,
@@ -17,7 +17,6 @@ export class Invoice {
 
   @Column({ nullable: true })
   invoicePDF: string;
-
 
   @Column()
   invoiceNumber: string;

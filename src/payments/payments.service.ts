@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PaymentDetails } from './entites/payment.entity';
-import { Order } from 'src/orders/entites/order.entity';
+import { PaymentDetails } from './entities/payment.entity';
+import { Order } from 'src/orders/entities/order.entity';
 
 interface CreatePaymentDto {
   paymentMethod: string;

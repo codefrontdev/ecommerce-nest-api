@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { Request, Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/users/entites/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import { SignInUserDto } from './dto/signin-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { EmailService } from 'src/@core/shared/email.service';
@@ -129,9 +129,9 @@ export class AuthService {
     if (!decoded) {
       throw new UnauthorizedException('Invalid token');
     }
-    
+
     const user = await this.userRepository.findOne(decoded.id);
-    
+
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
@@ -229,7 +229,7 @@ export class AuthService {
         secret: this.config.get<string>('JWT_SECRET'),
       });
 
-      res.cookie('accessToken', accessToken, { 
+      res.cookie('accessToken', accessToken, {
         httpOnly: true,
         secure: this.config.get<string>('NODE_ENV') === 'production',
         sameSite: 'none',

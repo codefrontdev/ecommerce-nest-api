@@ -1,5 +1,4 @@
-
-import { Order } from 'src/orders/entites/order.entity';
+import { Order } from 'src/orders/entities/order.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -28,7 +27,7 @@ export class Tracking {
   @JoinColumn()
   order: Order;
 
-  @Column({ type: 'jsonb' , default:[]})
+  @Column({ type: 'jsonb', default: [] })
   steps: TrackingStep[];
 
   @CreateDateColumn()

@@ -1,8 +1,17 @@
 // src/orders/orders.controller.ts
-import { Controller, Get, Post, Body, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { Order } from './entites/order.entity';
+import { Order } from './entities/order.entity';
 import { JWTPayloadType } from 'src/@core/utils/types';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Roles } from 'src/auth/decorators/user-role.decorator';

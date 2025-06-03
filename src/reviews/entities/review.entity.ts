@@ -1,5 +1,5 @@
-import { Product } from 'src/products/entites/product.entity';
-import { User } from 'src/users/entites/user.entity';
+import { Product } from 'src/products/entities/product.entity';
+import { User } from 'src/users/entities/user.entity';
 import {
   BaseEntity,
   Column,
@@ -23,7 +23,7 @@ export class Review extends BaseEntity {
   @Column()
   rating: number;
 
-  @Column("json")
+  @Column('json')
   comment: {
     title: string;
     body: string;

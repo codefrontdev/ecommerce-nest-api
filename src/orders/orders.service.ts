@@ -3,12 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { Order } from './entites/order.entity';
-import { OrderItem } from './entites/order-item.entity';
+import { Order } from './entities/order.entity';
+import { OrderItem } from './entities/order-item.entity';
 import { JWTPayloadType } from 'src/@core/utils/types';
 import { UpdateOrdersDto } from './dto/update-order.dto';
-import { PaymentDetails } from '../payments/entites/payment.entity';
-import { Tracking } from 'src/tracking/entites/tracking.entity';
+import { PaymentDetails } from '../payments/entities/payment.entity';
+import { Tracking } from 'src/tracking/entities/tracking.entity';
 import { ProductsService } from 'src/products/products.service';
 import { InvoiceService } from 'src/invoice/invoice.service';
 
@@ -108,7 +108,6 @@ export class OrdersService {
     await this.trackingRepository.save(tracking);
 
     await this.invoiceService.create({ orderId: savedOrder.id });
-
 
     return {
       data: savedOrder,
@@ -232,7 +231,10 @@ export class OrdersService {
       totalPages: Math.ceil(total / Number(pageSize)),
       lastPage: Math.ceil(total / Number(pageSize)),
       page: Number(page),
-      nextPage: Number(page) < Math.ceil(total / Number(pageSize)) ? Number(page) + 1 : null,
+      nextPage:
+        Number(page) < Math.ceil(total / Number(pageSize))
+          ? Number(page) + 1
+          : null,
       orderStatusCounts,
       data: orders,
     };

@@ -1,6 +1,9 @@
-import { DeviceHistory } from 'src/deviceHistory/entites/device-history.entity';
-import { Review } from 'src/reviews/entites/review.entity';
+
 import { UserRole, UserStatus } from 'src/@core/utils/enums';
+import { Comment } from 'src/comments/entites/comment.entity';
+import { DeviceHistory } from 'src/deviceHistory/entities/device-history.entity';
+import { Order } from 'src/orders/entities/order.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,8 +13,9 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import { Order } from 'src/orders/entites/order.entity';
-import { Comment } from 'src/comments/entites/comment.entity';
+
+
+
 
 @Entity()
 @Unique(['email'])

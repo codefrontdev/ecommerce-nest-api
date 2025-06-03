@@ -1,7 +1,7 @@
 // src/reviews/review.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Review } from './entites/review.entity';
+import { Review } from './entities/review.entity';
 import { Repository } from 'typeorm';
 import { CreateReviewDto } from './dto/create-review.dto';
 
@@ -37,8 +37,10 @@ export class ReviewService {
     });
   }
 
-
-  async updateReiew (id: string, updateReviewDto: CreateReviewDto): Promise<Review> {
+  async updateReiew(
+    id: string,
+    updateReviewDto: CreateReviewDto,
+  ): Promise<Review> {
     const review = await this.reviewRepository.findOne({ where: { id } });
     if (!review) throw new NotFoundException('Review not found');
 
