@@ -15,6 +15,7 @@ async function bootstrap() {
       'http://192.168.1.4:5173',
       'http://192.168.1.6:3000',
       'https://ecommerce-dash-app.netlify.app',
+      'https://ecommerce-demo-v1.netlify.app/',
     ],
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true,
