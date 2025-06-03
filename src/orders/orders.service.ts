@@ -5,7 +5,7 @@ import { Like, Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
-import { JWTPayloadType } from 'utils/types';
+import { JWTPayloadType } from 'src/utils/types';
 import { UpdateOrdersDto } from './dto/update-order.dto';
 import { PaymentDetails } from '../payments/entities/payment.entity';
 import { Tracking } from 'src/tracking/entities/tracking.entity';
