@@ -8,7 +8,9 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    
+  "start": "node dist/main.js",
+    "start:prod:docker": "docker run -p 3000:3000 --env-file .env -v $(pwd)/dist:/usr/src/app dist/main.js",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
