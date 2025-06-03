@@ -15,8 +15,11 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Last name is required' })
   lastName: string;
 
-  @IsOptional() // يسمح بأن تكون null أو undefined
+  @IsOptional()
   country?: string;
+
+  @IsOptional()
+  city?: string;
 
   @IsNotEmpty({ message: 'Email is required' })
   @IsEmail({}, { message: 'Invalid email format' })
@@ -34,11 +37,11 @@ export class CreateUserDto {
   @IsEnum(UserStatus)
   status: UserStatus;
 
-  @IsOptional() // يسمح بأن تكون null أو undefined
+  @IsOptional() 
   @IsPhoneNumber('MA', { message: 'Invalid phone number format' })
   phone?: string;
 
-  @IsOptional() // يسمح بأن تكون null أو undefined
+  @IsOptional()
   address?: string;
 
   @IsOptional()

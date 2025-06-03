@@ -1,6 +1,13 @@
-import { Product } from "src/products/entites/product.entity";
-import { User } from "src/users/entites/user.entity";
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Product } from 'src/products/entites/product.entity';
+import { User } from 'src/users/entites/user.entity';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Review extends BaseEntity {
@@ -16,8 +23,12 @@ export class Review extends BaseEntity {
   @Column()
   rating: number;
 
-  @Column()
-  comment: string;
+  @Column("json")
+  comment: {
+    title: string;
+    body: string;
+    images?: string[]; // Optional field for images
+  };
 
   @CreateDateColumn()
   createdAt: Date;

@@ -9,7 +9,9 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:5173',
+      'http://localhost:3000',
       'http://192.168.1.4:5173',
+      'http://192.168.1.6:3000',
       'https://ecommerce-dash-app.netlify.app',
     ],
     allowedHeaders: 'Content-Type, Authorization',
@@ -17,6 +19,6 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  await app.listen(5000, '0.0.0.0');
 }
 bootstrap();

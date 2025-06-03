@@ -87,7 +87,6 @@ export class ProductsService {
       skip: (page - 1) * pageSize,
       take: pageSize,
       relations: ['category', 'brand', 'reviews'],
-
     });
 
     // إحصاء الحالات (مثل available و disabled)
@@ -103,15 +102,14 @@ export class ProductsService {
     groupedCounts.forEach((row) => {
       countsMap[row.status] = parseInt(row.count);
     });
-    
 
+    console.log(products);
     // إرجاع النتيجة
     return {
       message: 'Products found successfully',
       success: true,
       products,
       total,
-      page,
       totalPages: Math.ceil(total / pageSize),
       lastPage: Math.ceil(total / pageSize),
       currentPage: page,
@@ -144,10 +142,19 @@ export class ProductsService {
   }
 
   async findOne(id: string) {
-    const product = await this.productRepository.findOneBy({ id });
+    console.log(id);
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: ['category', 'brand', 'reviews'],
+    });
 
+    console.log(product);
     if (!product) {
       throw new NotFoundException('Product not found');
+    }
+    // Check if the product is disabled
+    if (product.status === 'disabled') {
+      throw new BadRequestException('Product is disabled');
     }
 
     return {
