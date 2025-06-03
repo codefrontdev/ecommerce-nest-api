@@ -8,8 +8,8 @@ import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { DeviceHistory } from './entities/device-history.entity';
 import { GetByIdDto } from 'src/products/dto/get-by-id.dto';
-import { JWTPayloadType } from 'src/utils/types';
-import { UserRole } from 'src/utils/enums';
+import { JWTPayloadType } from 'utils/types';
+import { UserRole } from 'utils/enums';
 
 @Injectable()
 export class DeviceHistoryService {

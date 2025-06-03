@@ -15,13 +15,13 @@ import { EmailService } from 'src/shared/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { DeviceHistoryService } from 'src/deviceHistory/device-history.service';
-import { DeviceUtils } from 'src/utils/device-utils';
+import { DeviceUtils } from 'utils/device-utils';
 import axios from 'axios';
 import { RabbitMQService } from 'src/shared/rabbitmq.service';
 import { Redis } from 'ioredis';
-import { JWTPayloadType } from 'src/utils/types';
+import { JWTPayloadType } from 'utils/types';
 import { GetByIdDto } from 'src/products/dto/get-by-id.dto';
-import { UserRole } from 'src/utils/enums';
+import { UserRole } from 'utils/enums';
 
 @Injectable()
 export class AuthService {

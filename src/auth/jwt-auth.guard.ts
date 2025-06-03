@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { CURRENT_USER_KEY } from 'src/utils/constants';
+import { CURRENT_USER_KEY } from 'utils/constants';
 import { AuthService } from './auth.service';
-import { JWTPayloadType } from 'src/utils/types';
-import { UserRole } from 'src/utils/enums';
+import { JWTPayloadType } from 'utils/types';
+import { UserRole } from 'utils/enums';
 import { Reflector } from '@nestjs/core';
 import { User } from 'src/users/entities/user.entity';
 

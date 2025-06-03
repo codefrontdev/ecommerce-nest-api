@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { categoriesService } from './categories.service';
 import { Roles } from 'src/auth/decorators/user-role.decorator';
-import { UserRole } from 'src/utils/enums';
+import { UserRole } from 'utils/enums';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';

@@ -1,4 +1,4 @@
-import { UserRole, UserStatus } from 'src/utils/enums';
+import { UserRole, UserStatus } from 'utils/enums';
 import { Comment } from 'src/comments/entites/comment.entity';
 import { DeviceHistory } from 'src/deviceHistory/entities/device-history.entity';
 import { Order } from 'src/orders/entities/order.entity';

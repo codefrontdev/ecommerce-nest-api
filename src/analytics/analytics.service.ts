@@ -5,7 +5,7 @@ import { Product } from 'src/products/entities/product.entity';
 import { Between, Repository } from 'typeorm';
 import { Analytics } from './entities/analytics.entity';
 import { DeviceHistory } from 'src/deviceHistory/entities/device-history.entity';
-import { SalesData } from 'src/utils/types';
+import { SalesData } from 'utils/types';
 @Injectable()
 export class AnalyticsService {
   constructor(

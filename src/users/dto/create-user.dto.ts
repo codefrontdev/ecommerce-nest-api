@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsPhoneNumber,
 } from 'class-validator';
-import { UserRole, UserStatus } from 'src/utils/enums';
+import { UserRole, UserStatus } from 'utils/enums';
 
 export class CreateUserDto {
   @IsNotEmpty({ message: 'First name is required' })

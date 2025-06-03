@@ -13,9 +13,9 @@ import { DeviceHistoryService } from './device-history.service';
 import { GetByIdDto } from 'src/products/dto/get-by-id.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { JWTPayloadType } from 'src/utils/types';
+import { JWTPayloadType } from 'utils/types';
 import { Roles } from 'src/auth/decorators/user-role.decorator';
-import { UserRole } from 'src/utils/enums';
+import { UserRole } from 'utils/enums';
 
 @Controller('device-history')
 export class DeviceHistoryController {
