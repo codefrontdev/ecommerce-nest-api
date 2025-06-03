@@ -15,7 +15,7 @@ import {
 } from 'typeorm';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetByIdDto } from './dto/get-by-id.dto';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 
 @Injectable()
 export class ProductsService {

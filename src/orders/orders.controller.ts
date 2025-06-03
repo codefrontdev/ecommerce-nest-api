@@ -12,10 +12,10 @@ import {
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity';
-import { JWTPayloadType } from 'src/@core/utils/types';
+import { JWTPayloadType } from 'src/utils/types';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Roles } from 'src/auth/decorators/user-role.decorator';
-import { UserRole } from 'src/@core/utils/enums';
+import { UserRole } from 'src/utils/enums';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('orders')

@@ -11,17 +11,17 @@ import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/entities/user.entity';
 import { SignInUserDto } from './dto/signin-user.dto';
 import { UsersService } from 'src/users/users.service';
-import { EmailService } from 'src/@core/shared/email.service';
+import { EmailService } from 'src/shared/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { DeviceHistoryService } from 'src/deviceHistory/device-history.service';
-import { DeviceUtils } from 'src/@core/utils/device-utils';
+import { DeviceUtils } from 'src/utils/device-utils';
 import axios from 'axios';
-import { RabbitMQService } from 'src/@core/shared/rabbitmq.service';
+import { RabbitMQService } from 'src/shared/rabbitmq.service';
 import { Redis } from 'ioredis';
-import { JWTPayloadType } from 'src/@core/utils/types';
+import { JWTPayloadType } from 'src/utils/types';
 import { GetByIdDto } from 'src/products/dto/get-by-id.dto';
-import { UserRole } from 'src/@core/utils/enums';
+import { UserRole } from 'src/utils/enums';
 
 @Injectable()
 export class AuthService {

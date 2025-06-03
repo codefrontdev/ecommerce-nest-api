@@ -14,9 +14,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/user-role.decorator';
-import { UserRole } from 'src/@core/utils/enums';
+import { UserRole } from 'src/utils/enums';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { ParseUUIDPipe } from 'src/@core/pipes/parse-uuid.pipe';
+import { ParseUUIDPipe } from 'src/pipes/parse-uuid.pipe';
 import { GetByIdDto } from './dto/get-by-id.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CommentsService } from './comments.service';

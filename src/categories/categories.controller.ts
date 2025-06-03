@@ -12,24 +12,20 @@ import {
 } from '@nestjs/common';
 import { categoriesService } from './categories.service';
 import { Roles } from 'src/auth/decorators/user-role.decorator';
-import { UserRole } from 'src/@core/utils/enums';
+import { UserRole } from 'src/utils/enums';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { ParseUUIDPipe } from 'src/@core/pipes/parse-uuid.pipe';
+import { ParseUUIDPipe } from 'src/pipes/parse-uuid.pipe';
 import { GetByIdDto } from './dto/get-by-id.dto';
 
 @Controller('categories')
 export class categoriesController {
-  constructor(
-    private readonly categoriesService: categoriesService,
-  ) {}
+  constructor(private readonly categoriesService: categoriesService) {}
   @Post()
   @Roles(UserRole.ADMIN, UserRole.CONTENT_ADMIN, UserRole.SUPER_ADMIN)
   @UseGuards(JwtAuthGuard)
-  async create(
-    @Body() createCategoryDto: CreateCategoryDto,
-  ) {
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
     return await this.categoriesService.create(createCategoryDto);
   }
 
@@ -47,8 +43,6 @@ export class categoriesController {
   ) {
     return this.categoriesService.findAll(query);
   }
-
-  
 
   @Get(':id')
   @Roles(UserRole.ADMIN, UserRole.CONTENT_ADMIN, UserRole.SUPER_ADMIN)

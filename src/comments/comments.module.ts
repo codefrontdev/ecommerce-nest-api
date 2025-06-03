@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 import { Comment } from './entites/comment.entity';
 import { CommentsController } from './comments.controller';
 import { CommentsService } from './comments.service';

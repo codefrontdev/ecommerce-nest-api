@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 import { AppModule } from 'src/app.module';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 import { Review } from 'src/reviews/entities/review.entity';
 
 @Module({

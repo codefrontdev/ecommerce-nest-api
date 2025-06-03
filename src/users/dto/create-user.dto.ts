@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsPhoneNumber,
 } from 'class-validator';
-import { UserRole, UserStatus } from 'src/@core/utils/enums';
+import { UserRole, UserStatus } from 'src/utils/enums';
 
 export class CreateUserDto {
   @IsNotEmpty({ message: 'First name is required' })
@@ -37,7 +37,7 @@ export class CreateUserDto {
   @IsEnum(UserStatus)
   status: UserStatus;
 
-  @IsOptional() 
+  @IsOptional()
   @IsPhoneNumber('MA', { message: 'Invalid phone number format' })
   phone?: string;
 

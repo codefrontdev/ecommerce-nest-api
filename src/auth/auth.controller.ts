@@ -12,9 +12,9 @@ import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { JWTPayloadType } from 'src/@core/utils/types';
+import { JWTPayloadType } from 'src/utils/types';
 import { Roles } from './decorators/user-role.decorator';
-import { UserRole } from 'src/@core/utils/enums';
+import { UserRole } from 'src/utils/enums';
 
 @Controller('/auth/')
 export class AuthController {

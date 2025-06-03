@@ -1,4 +1,4 @@
-import { EmailService } from './../@core/shared/email.service';
+import { EmailService } from '../shared/email.service';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';

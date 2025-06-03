@@ -14,18 +14,18 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserRole } from 'src/@core/utils/enums';
+import { UserRole } from 'src/utils/enums';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import {
   FileFieldsInterceptor,
   FileInterceptor,
 } from '@nestjs/platform-express';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 import { Roles } from 'src/auth/decorators/user-role.decorator';
-import { ParseUUIDPipe } from 'src/@core/pipes/parse-uuid.pipe';
+import { ParseUUIDPipe } from 'src/pipes/parse-uuid.pipe';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { JWTPayloadType } from 'src/@core/utils/types';
+import { JWTPayloadType } from 'src/utils/types';
 
 @Controller('users')
 export class UsersController {

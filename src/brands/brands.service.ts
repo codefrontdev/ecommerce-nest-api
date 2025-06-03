@@ -9,31 +9,25 @@ import { GetByIdDto } from './dto/get-by-id.dto';
 import { Brand } from './entites/brand.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 
 @Injectable()
 export class BrandsService {
   constructor(
     @InjectRepository(Brand)
     private readonly brandRepository: Repository<Brand>,
-    
-        private readonly cloudinaryService: CloudinaryService,
+
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createbrandDto: CreateBrandDto) {
-
     return this.brandRepository.save(createbrandDto);
   }
-  async findAll(filter: {
-    search?: string;
-    page?: number;
-    pageSize?: number;
-  }) {
-    const {  search, page = 1, pageSize = 10 } = filter;
+  async findAll(filter: { search?: string; page?: number; pageSize?: number }) {
+    const { search, page = 1, pageSize = 10 } = filter;
 
     // حيث الشروط
     const whereConditions: any = {};
-
 
     if (search) {
       whereConditions.name = Like(`%${search}%`);
@@ -45,9 +39,6 @@ export class BrandsService {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
-
-    
-
 
     // إرجاع النتيجة
     return {
@@ -89,7 +80,10 @@ export class BrandsService {
     }
 
     if (brand?.data.logo) {
-      await this.cloudinaryService.deleteImage(brand?.data.logo.publicId, 'brands');
+      await this.cloudinaryService.deleteImage(
+        brand?.data.logo.publicId,
+        'brands',
+      );
     }
 
     const deleted = await this.brandRepository.delete(id);

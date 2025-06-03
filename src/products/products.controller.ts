@@ -15,14 +15,14 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Roles } from 'src/auth/decorators/user-role.decorator';
-import { UserRole } from 'src/@core/utils/enums';
+import { UserRole } from 'src/utils/enums';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateProductDto } from './dto/create-product.dto';
-import { ParseUUIDPipe } from 'src/@core/pipes/parse-uuid.pipe';
+import { ParseUUIDPipe } from 'src/pipes/parse-uuid.pipe';
 import { GetByIdDto } from './dto/get-by-id.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 
 @Controller('products')
 export class ProductsController {
