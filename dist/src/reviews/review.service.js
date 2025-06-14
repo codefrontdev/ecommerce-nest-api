@@ -26,7 +26,6 @@ let ReviewService = class ReviewService {
         this.usersService = usersService;
     }
     async create(createReviewDto) {
-        console.log('createReviewDto', createReviewDto);
         let user = await this.usersService.findOneByEmail(createReviewDto.email);
         if (!createReviewDto.userId && !user) {
             user = await this.usersService.prepareUser({

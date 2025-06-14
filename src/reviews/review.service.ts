@@ -19,7 +19,6 @@ export class ReviewService {
   async create(
     createReviewDto: CreateReviewDto,
   ): Promise<{ message: string; success: boolean; data: Review }> {
-    console.log('createReviewDto', createReviewDto);
     let user = await this.usersService.findOneByEmail(createReviewDto.email);
     if (!createReviewDto.userId && !user) {
       user = await this.usersService.prepareUser({

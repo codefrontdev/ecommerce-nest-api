@@ -90,7 +90,6 @@ let OrderHelperService = class OrderHelperService {
             const discountAmount = (price * discount * quantity) / 100;
             subTotal += finalPrice;
             discountTotal += discountAmount;
-            console.log('orderItems', orderItems);
             orderItems.push(this.orderItemsRepository.create({
                 price,
                 quantity,
@@ -98,7 +97,6 @@ let OrderHelperService = class OrderHelperService {
             }));
         }
         this.productsService.updateStock(orderItems);
-        console.log('orderItems', orderItems);
         return {
             orderItems,
             subTotal,

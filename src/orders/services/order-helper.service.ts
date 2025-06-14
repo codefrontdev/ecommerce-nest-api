@@ -82,7 +82,6 @@ export class OrderHelperService {
       subTotal += finalPrice;
       discountTotal += discountAmount;
 
-      console.log('orderItems', orderItems);
       orderItems.push(
         this.orderItemsRepository.create({
           price,
@@ -92,7 +91,6 @@ export class OrderHelperService {
       );
     }
     this.productsService.updateStock(orderItems);
-    console.log('orderItems', orderItems);
     return {
       orderItems,
       subTotal,

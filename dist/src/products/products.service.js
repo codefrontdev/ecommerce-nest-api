@@ -122,21 +122,6 @@ let ProductsService = class ProductsService {
         if (!product) {
             throw new common_1.NotFoundException('Product not found');
         }
-        console.log('product', {
-            ...product,
-            review: {
-                ...product.reviews,
-                user: product.reviews.map((review) => {
-                    return {
-                        id: review.user.id,
-                        firstName: review.user.firstName,
-                        lastName: review.user.lastName,
-                        status: review.user.status,
-                        image: review.user.profilePicture,
-                    };
-                }),
-            },
-        });
         if (product.status === 'disabled') {
             throw new common_1.BadRequestException('Product is disabled');
         }

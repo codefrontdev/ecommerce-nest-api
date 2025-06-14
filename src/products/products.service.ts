@@ -164,21 +164,7 @@ export class ProductsService {
       if (!product) {
         throw new NotFoundException('Product not found');
       }
-      console.log('product', {
-        ...product,
-        review: {
-          ...product.reviews,
-          user: product.reviews.map((review) => {
-            return {
-              id: review.user.id,
-              firstName: review.user.firstName,
-              lastName: review.user.lastName,
-              status: review.user.status,
-              image: review.user.profilePicture,
-            };
-          }),
-        },
-      });
+     
     // Check if the product is disabled
     if (product.status === 'disabled') {
       throw new BadRequestException('Product is disabled');
