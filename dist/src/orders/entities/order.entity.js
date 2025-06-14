@@ -30,11 +30,17 @@ var OrderStatus;
 let Order = class Order {
     id;
     total;
+    deliveryDate;
+    deliveryAddress;
+    couponCode;
     amount;
     discount;
     shippingCharge;
     estimatedTax;
     comments;
+    transitionId;
+    streetAddress;
+    state;
     paymentMethod;
     createdAt;
     user;
@@ -53,6 +59,18 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
     __metadata("design:type", Number)
 ], Order.prototype, "total", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", Date)
+], Order.prototype, "deliveryDate", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Order.prototype, "deliveryAddress", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Order.prototype, "couponCode", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
     __metadata("design:type", Number)
@@ -73,6 +91,18 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => comment_entity_1.Comment, (comment) => comment.order),
     __metadata("design:type", Array)
 ], Order.prototype, "comments", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Order.prototype, "transitionId", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Order.prototype, "streetAddress", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Order.prototype, "state", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)

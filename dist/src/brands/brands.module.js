@@ -15,7 +15,7 @@ const auth_module_1 = require("../auth/auth.module");
 const brand_entity_1 = require("./entites/brand.entity");
 const brands_controller_1 = require("./brands.controller");
 const brands_service_1 = require("./brands.service");
-const cloudinary_service_1 = require("../@core/shared/cloudinary.service");
+const cloudinary_service_1 = require("../shared/cloudinary.service");
 let BrandsModule = class BrandsModule {
 };
 exports.BrandsModule = BrandsModule;

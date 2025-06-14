@@ -19,7 +19,7 @@ const get_by_id_dto_1 = require("../products/dto/get-by-id.dto");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
 const user_role_decorator_1 = require("../auth/decorators/user-role.decorator");
-const enums_1 = require("../@core/utils/enums");
+const enums_1 = require("../utils/enums");
 let DeviceHistoryController = class DeviceHistoryController {
     deviceHistoryService;
     constructor(deviceHistoryService) {
@@ -36,7 +36,6 @@ let DeviceHistoryController = class DeviceHistoryController {
     }
     async logoutFromDevice(deviceId, JWTpayload) {
         const userId = JWTpayload.id;
-        console.log('userId', userId);
         return this.deviceHistoryService.logoutFromDevice(deviceId, JWTpayload);
     }
 };

@@ -159,6 +159,14 @@ export class AuthService {
   async isPasswordValid(inputPassword: string, storedPassword: string) {
     return await bcrypt.compare(inputPassword, storedPassword);
   }
+  public async prepareSessionTokens(req: Request, user: User) {
+    const deviceInfo = await this.collectDeviceInfo(req, user);
+    return await this.createTokens(
+      user,
+      parseInt(req.ip || '0', 10) || null,
+      deviceInfo.id,
+    );
+  }
 
   async collectDeviceInfo(req: Request, user: User) {
     const userAgent = req.headers['user-agent'] || '';

@@ -3,13 +3,13 @@ import { Request, Response } from 'express';
 import { User } from 'src/users/entities/user.entity';
 import { SignInUserDto } from './dto/signin-user.dto';
 import { UsersService } from 'src/users/users.service';
-import { EmailService } from 'src/@core/shared/email.service';
+import { EmailService } from 'src/shared/email.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { DeviceHistoryService } from 'src/deviceHistory/device-history.service';
-import { RabbitMQService } from 'src/@core/shared/rabbitmq.service';
+import { RabbitMQService } from 'src/shared/rabbitmq.service';
 import { Redis } from 'ioredis';
-import { JWTPayloadType } from 'src/@core/utils/types';
+import { JWTPayloadType } from 'src/utils/types';
 import { GetByIdDto } from 'src/products/dto/get-by-id.dto';
 export declare class AuthService {
     private readonly userRepository;
@@ -29,6 +29,10 @@ export declare class AuthService {
     } | null>;
     checkIfAlreadyLoggedIn(req: Request, res: Response): Promise<void>;
     isPasswordValid(inputPassword: string, storedPassword: string): Promise<boolean>;
+    prepareSessionTokens(req: Request, user: User): Promise<{
+        accessToken: string;
+        refreshToken: string;
+    }>;
     collectDeviceInfo(req: Request, user: User): Promise<import("../deviceHistory/entities/device-history.entity").DeviceHistory>;
     createTokens(user: User, ipAddress: number | null, deviceId: string): Promise<{
         accessToken: string;

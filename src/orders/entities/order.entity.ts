@@ -34,6 +34,15 @@ export class Order {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   total: number;
 
+  @Column({ nullable: true })
+  deliveryDate: Date;
+
+  @Column({ nullable: true })
+  deliveryAddress: string;
+
+  @Column({ nullable: true })
+  couponCode?: string;
+
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount: number;
 
@@ -48,6 +57,15 @@ export class Order {
 
   @OneToMany(() => Comment, (comment) => comment.order)
   comments: Comment[];
+
+  @Column({ nullable: true })
+  transitionId?: string;
+
+  @Column({ nullable: true })
+  streetAddress?: string;
+
+  @Column({ nullable: true })
+  state: string;
 
   @Column()
   paymentMethod: string;

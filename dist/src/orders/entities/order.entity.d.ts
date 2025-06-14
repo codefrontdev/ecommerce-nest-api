@@ -16,11 +16,17 @@ export declare enum OrderStatus {
 export declare class Order {
     id: string;
     total: number;
+    deliveryDate: Date;
+    deliveryAddress: string;
+    couponCode?: string;
     amount: number;
     discount: number;
     shippingCharge: number;
     estimatedTax: number;
     comments: Comment[];
+    transitionId?: string;
+    streetAddress?: string;
+    state: string;
     paymentMethod: string;
     createdAt: Date;
     user: User;

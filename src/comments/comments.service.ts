@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { OrdersService } from 'src/orders/orders.service';
+import { OrdersService } from 'src/orders/services/orders.service';
 import { UsersService } from 'src/users/users.service';
 import { Comment } from './entites/comment.entity';
 
@@ -20,13 +20,13 @@ export class CommentsService {
     private readonly usersService: UsersService,
   ) {}
 
-  
-  async create(createCommentDto: CreateCommentDto): Promise<{ message: string; success: boolean; data: Comment }> {
+  async create(
+    createCommentDto: CreateCommentDto,
+  ): Promise<{ message: string; success: boolean; data: Comment }> {
     const { orderId, userId, text } = createCommentDto;
 
     const { data: order } = await this.ordersService.findOne(orderId);
     const user = await this.usersService.findOne(userId);
-
 
     const comment = new Comment();
     comment.text = text;
@@ -39,10 +39,9 @@ export class CommentsService {
       message: 'Comment created successfully',
       success: true,
       data: savedComment,
-    }
+    };
   }
 
-  
   async findAll(filter: {
     orderId?: string;
     userId?: string;
@@ -91,7 +90,6 @@ export class CommentsService {
     return comment;
   }
 
-  
   async update(
     id: string,
     updateCommentDto: UpdateCommentDto,
@@ -101,12 +99,10 @@ export class CommentsService {
       throw new NotFoundException('Comment not found');
     }
 
-    
     await this.commentRepository.update(id, updateCommentDto);
     return this.findOne(id);
   }
 
-  
   async remove(id: string): Promise<{ message: string; success: boolean }> {
     const comment = await this.findOne(id);
     if (!comment) {

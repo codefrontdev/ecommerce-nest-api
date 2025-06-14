@@ -91,13 +91,12 @@ export class UsersController {
         'users',
       );
     }
-    console.log('DTO in controller:', updateUserDto); // راقب هنا
+    
     return this.usersService.update(user.id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    console.log('id', id);
     return this.usersService.remove(id);
   }
 }

@@ -10,15 +10,18 @@ exports.ReviewModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const review_entity_1 = require("./entities/review.entity");
+const review_controller_1 = require("./review.controller");
+const review_service_1 = require("./review.service");
+const users_module_1 = require("../users/users.module");
 let ReviewModule = class ReviewModule {
 };
 exports.ReviewModule = ReviewModule;
 exports.ReviewModule = ReviewModule = __decorate([
     (0, common_1.Module)({
-        providers: [],
-        imports: [typeorm_1.TypeOrmModule.forFeature([review_entity_1.Review])],
-        exports: [],
-        controllers: [],
+        providers: [review_service_1.ReviewService],
+        imports: [typeorm_1.TypeOrmModule.forFeature([review_entity_1.Review]), users_module_1.UsersModule],
+        exports: [review_service_1.ReviewService],
+        controllers: [review_controller_1.ReviewController],
     })
 ], ReviewModule);
 //# sourceMappingURL=review.module.js.map

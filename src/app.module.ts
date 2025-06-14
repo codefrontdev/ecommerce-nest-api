@@ -17,6 +17,9 @@ import { OrdersModule } from './orders/orders.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CommentsModule } from './comments/comments.module';
 import { InvoiceModule } from './invoice/invoice.module';
+import { CouponModule } from './coupons/coupons.module';
+import { WishlistModule } from './wishlist/wishlist.module';
+import { ReviewModule } from './reviews/review.module';
 
 @Module({
   imports: [
@@ -40,7 +43,10 @@ import { InvoiceModule } from './invoice/invoice.module';
     AnalyticsModule,
     OrdersModule,
     AuthModule,
+    CouponModule,
     InvoiceModule,
+    WishlistModule,
+    ReviewModule
   ],
 
   controllers: [AppController],

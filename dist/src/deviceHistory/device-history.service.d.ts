@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { DeviceHistory } from './entities/device-history.entity';
 import { GetByIdDto } from 'src/products/dto/get-by-id.dto';
-import { JWTPayloadType } from 'src/@core/utils/types';
+import { JWTPayloadType } from 'src/utils/types';
 export declare class DeviceHistoryService {
     private readonly deviceHistoryRepository;
     constructor(deviceHistoryRepository: Repository<DeviceHistory>);

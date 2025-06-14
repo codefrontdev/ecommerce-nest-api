@@ -13,10 +13,10 @@ const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
 const user_entity_1 = require("../users/entities/user.entity");
 const users_service_1 = require("../users/users.service");
-const email_service_1 = require("../@core/shared/email.service");
+const email_service_1 = require("../shared/email.service");
 const jwt_1 = require("@nestjs/jwt");
 const deviceHistory_module_1 = require("../deviceHistory/deviceHistory.module");
-const rabbitmq_service_1 = require("../@core/shared/rabbitmq.service");
+const rabbitmq_service_1 = require("../shared/rabbitmq.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;

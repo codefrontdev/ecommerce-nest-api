@@ -16,12 +16,12 @@ exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
-const enums_1 = require("../@core/utils/enums");
+const enums_1 = require("../utils/enums");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const platform_express_1 = require("@nestjs/platform-express");
-const cloudinary_service_1 = require("../@core/shared/cloudinary.service");
+const cloudinary_service_1 = require("../shared/cloudinary.service");
 const user_role_decorator_1 = require("../auth/decorators/user-role.decorator");
-const parse_uuid_pipe_1 = require("../@core/pipes/parse-uuid.pipe");
+const parse_uuid_pipe_1 = require("../pipes/parse-uuid.pipe");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
 let UsersController = class UsersController {
@@ -47,11 +47,9 @@ let UsersController = class UsersController {
         if (file) {
             updateUserDto.profilePicture = await this.cloudinaryService.upload(file, 'users');
         }
-        console.log('DTO in controller:', updateUserDto);
         return this.usersService.update(user.id, updateUserDto);
     }
     remove(id) {
-        console.log('id', id);
         return this.usersService.remove(id);
     }
 };

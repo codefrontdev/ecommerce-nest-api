@@ -3,6 +3,7 @@ export enum UserRole {
   CUSTOMER = 'customer',
   SUPER_ADMIN = 'super_admin',
   CONTENT_ADMIN = 'content_admin',
+  GEST = 'guest',
 }
 
 export enum UserStatus {

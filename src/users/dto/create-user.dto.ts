@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsOptional,
   IsPhoneNumber,
+  ValidateIf,
 } from 'class-validator';
 import { UserRole, UserStatus } from 'src/utils/enums';
 
@@ -25,13 +26,19 @@ export class CreateUserDto {
   @IsEmail({}, { message: 'Invalid email format' })
   email: string;
 
+  @ValidateIf((o) => o.role !== UserRole.GEST)
   @IsNotEmpty({ message: 'Password is required' })
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
   password: string;
 
   @IsNotEmpty({ message: 'Role is required' })
   @IsEnum(UserRole)
-  role: UserRole;
+  role:
+    | UserRole.ADMIN
+    | UserRole.CUSTOMER
+    | UserRole.SUPER_ADMIN
+    | UserRole.CONTENT_ADMIN
+    | UserRole.GEST;
 
   @IsNotEmpty({ message: 'Status is required' })
   @IsEnum(UserStatus)
@@ -43,6 +50,9 @@ export class CreateUserDto {
 
   @IsOptional()
   address?: string;
+
+  @IsOptional()
+  zip?: string;
 
   @IsOptional()
   profilePicture?: {

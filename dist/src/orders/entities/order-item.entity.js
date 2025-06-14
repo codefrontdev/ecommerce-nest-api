@@ -16,6 +16,8 @@ const product_entity_1 = require("../../products/entities/product.entity");
 let OrderItem = class OrderItem {
     id;
     quantity;
+    color;
+    size;
     price;
     product;
     order;
@@ -30,6 +32,14 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], OrderItem.prototype, "quantity", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], OrderItem.prototype, "color", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], OrderItem.prototype, "size", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
     __metadata("design:type", Number)

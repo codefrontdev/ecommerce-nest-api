@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { OrdersService } from 'src/orders/orders.service';
+import { OrdersService } from 'src/orders/services/orders.service';
 import { UsersService } from 'src/users/users.service';
 import { Comment } from './entites/comment.entity';
 export declare class CommentsService {

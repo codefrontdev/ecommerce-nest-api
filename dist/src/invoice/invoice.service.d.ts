@@ -1,9 +1,9 @@
-import { EmailService } from './../@core/shared/email.service';
+import { EmailService } from '../shared/email.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { Invoice } from './entities/invoice.entity';
 import { Repository } from 'typeorm';
-import { OrdersService } from 'src/orders/orders.service';
+import { OrdersService } from 'src/orders/services/orders.service';
 export declare class InvoiceService {
     private readonly invoiceRepo;
     private readonly ordersService;

@@ -5,6 +5,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { UserRole, UserStatus } from 'src/utils/enums';
+import { CreateOrderDto } from 'src/orders/dto/create-order.dto';
+import { JWTPayloadType } from 'src/utils/types';
+import { CreateUserGestDto } from './dto/create-gest-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -115,7 +119,6 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    console.log('updateUserDto', updateUserDto);
 
     const newData = {
       ...updateUserDto,
@@ -141,9 +144,44 @@ export class UsersService {
     const result = await this.userRepository.update(id, {
       ...updateUserDto,
     });
-    console.log(result);
 
     return result;
+  }
+  public async prepareUser(dto: CreateUserGestDto, payload?: JWTPayloadType) {
+    const userId = payload?.id;
+    let user = userId
+      ? await this.userRepository.findOne({ where: { id: userId } })
+      : dto.email
+        ? await this.userRepository.findOneBy({ email: dto.email })
+        : null;
+
+    if (!user && !dto.email)
+      throw new Error('User ID or email must be provided');
+
+    if (!user) {
+      user = this.userRepository.create({
+        firstName: dto.firstName || 'Guest User',
+        lastName: dto.lastName || '',
+        email: dto.email,
+        country: dto.country,
+        city: dto.city,
+        postalCode: dto.zip,
+        address: dto.address,
+        phone: dto.phone,
+        role: UserRole.GEST,
+        status: UserStatus.INACTIVE,
+      });
+    } else {
+      user = Object.assign(user, {
+        phone: user.phone || dto.phone,
+        country: user.country || dto.country,
+        city: user.city || dto.city,
+        postalCode: user.postalCode || dto.zip,
+        address: user.address || dto.address,
+      });
+    }
+
+    return this.userRepository.save(user);
   }
 
   async remove(id: string) {

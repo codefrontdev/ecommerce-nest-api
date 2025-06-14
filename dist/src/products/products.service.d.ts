@@ -3,7 +3,8 @@ import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetByIdDto } from './dto/get-by-id.dto';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
+import { OrderItem } from 'src/orders/entities/order-item.entity';
 export declare class ProductsService {
     private readonly productRepository;
     private readonly cloudinaryService;
@@ -41,11 +42,66 @@ export declare class ProductsService {
     findOne(id: string): Promise<{
         message: string;
         success: boolean;
-        data: Product;
+        data: {
+            reviews: {
+                id: string;
+                rating: number;
+                comment: {
+                    title: string;
+                    body: string;
+                    images?: string[];
+                };
+                createdAt: Date;
+                user: {
+                    id: string;
+                    firstName: string;
+                    lastName: string;
+                    status: import("../utils/enums").UserStatus;
+                    image: {
+                        publicId: string;
+                        url: string;
+                    };
+                };
+            }[];
+            id: string;
+            name: string;
+            description: string;
+            category: import("../categories/entites/category.entity").Category;
+            categoryId: string;
+            brand: import("../brands/entites/brand.entity").Brand;
+            brandId: string;
+            tags: string[];
+            shortDescription: string;
+            status: string;
+            visibility: string;
+            publishDate: Date;
+            manufacturerName: string;
+            manufacturerBrand: string;
+            stock: number;
+            price: number;
+            discount: number;
+            orders: number;
+            image: {
+                url: string;
+                publicId: string | null;
+            };
+            images?: {
+                url: string;
+                publicId: string;
+            }[];
+            orderItems: OrderItem[];
+            colors: string[];
+            sizes: string[];
+            attributes: string[];
+            attributesValues: string[];
+            createdAt: Date;
+            updatedAt: Date;
+        };
     }>;
     update({ id }: GetByIdDto, updateProductDto: UpdateProductDto): Promise<import("typeorm").UpdateResult>;
     remove(id: string): Promise<{
         message: string;
         success: boolean;
     }>;
+    updateStock(items: OrderItem[]): void;
 }

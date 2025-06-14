@@ -10,12 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
-const enums_1 = require("../../@core/utils/enums");
+const enums_1 = require("../../utils/enums");
 const comment_entity_1 = require("../../comments/entites/comment.entity");
 const device_history_entity_1 = require("../../deviceHistory/entities/device-history.entity");
 const order_entity_1 = require("../../orders/entities/order.entity");
 const review_entity_1 = require("../../reviews/entities/review.entity");
 const typeorm_1 = require("typeorm");
+const wishlist_entity_1 = require("../../wishlist/entities/wishlist.entity");
 let User = class User {
     id;
     firstName;
@@ -38,6 +39,7 @@ let User = class User {
     deviceHistory;
     orders;
     reviews;
+    wishlist;
     createdAt;
     updatedAt;
 };
@@ -59,7 +61,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
@@ -70,6 +72,7 @@ __decorate([
             enums_1.UserRole.CUSTOMER,
             enums_1.UserRole.SUPER_ADMIN,
             enums_1.UserRole.CONTENT_ADMIN,
+            enums_1.UserRole.GEST,
         ],
         default: enums_1.UserRole.CUSTOMER,
     }),
@@ -141,6 +144,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => review_entity_1.Review, (review) => review.user),
     __metadata("design:type", Array)
 ], User.prototype, "reviews", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => wishlist_entity_1.Wishlist, (wishlist) => wishlist.user),
+    __metadata("design:type", Array)
+], User.prototype, "wishlist", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

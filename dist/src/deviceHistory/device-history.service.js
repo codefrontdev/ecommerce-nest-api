@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const device_history_entity_1 = require("./entities/device-history.entity");
-const enums_1 = require("../@core/utils/enums");
+const enums_1 = require("../utils/enums");
 let DeviceHistoryService = class DeviceHistoryService {
     deviceHistoryRepository;
     constructor(deviceHistoryRepository) {
@@ -34,7 +34,6 @@ let DeviceHistoryService = class DeviceHistoryService {
             location,
         });
         const result = await this.deviceHistoryRepository.save(deviceHistory);
-        console.log('result', result);
         return result;
     }
     async getDeviceHistoryByUserId({ id }) {

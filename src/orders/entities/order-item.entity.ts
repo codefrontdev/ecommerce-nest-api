@@ -16,6 +16,12 @@ export class OrderItem {
 
   @Column()
   quantity: number;
+  
+  @Column({ nullable: true })
+  color?: string;
+
+  @Column({ nullable: true })
+  size?: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;

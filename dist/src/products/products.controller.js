@@ -16,14 +16,14 @@ exports.ProductsController = void 0;
 const common_1 = require("@nestjs/common");
 const products_service_1 = require("./products.service");
 const user_role_decorator_1 = require("../auth/decorators/user-role.decorator");
-const enums_1 = require("../@core/utils/enums");
+const enums_1 = require("../utils/enums");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const update_product_dto_1 = require("./dto/update-product.dto");
 const create_product_dto_1 = require("./dto/create-product.dto");
-const parse_uuid_pipe_1 = require("../@core/pipes/parse-uuid.pipe");
+const parse_uuid_pipe_1 = require("../pipes/parse-uuid.pipe");
 const get_by_id_dto_1 = require("./dto/get-by-id.dto");
 const platform_express_1 = require("@nestjs/platform-express");
-const cloudinary_service_1 = require("../@core/shared/cloudinary.service");
+const cloudinary_service_1 = require("../shared/cloudinary.service");
 let ProductsController = class ProductsController {
     productsService;
     cloudinaryService;

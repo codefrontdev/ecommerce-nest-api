@@ -14,22 +14,22 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrdersController = void 0;
 const common_1 = require("@nestjs/common");
-const orders_service_1 = require("./orders.service");
+const orders_service_1 = require("./services/orders.service");
 const create_order_dto_1 = require("./dto/create-order.dto");
 const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
-const user_role_decorator_1 = require("../auth/decorators/user-role.decorator");
-const enums_1 = require("../@core/utils/enums");
-const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let OrdersController = class OrdersController {
     ordersService;
     constructor(ordersService) {
         this.ordersService = ordersService;
     }
-    async create(payload, createOrderDto) {
-        return this.ordersService.create(createOrderDto, payload);
+    async create(payload, res, req, createOrderDto) {
+        return this.ordersService.create(createOrderDto, req, res, payload);
     }
     async findAll(query) {
         return this.ordersService.findAll(query);
+    }
+    async handlePayPalCallback(token, payerId, res) {
+        return this.ordersService.handlePayPalCallback(token, payerId, res);
     }
     async findOne(id) {
         return this.ordersService.findOne(id);
@@ -40,13 +40,13 @@ let OrdersController = class OrdersController {
 };
 exports.OrdersController = OrdersController;
 __decorate([
-    (0, user_role_decorator_1.Roles)(enums_1.UserRole.ADMIN, enums_1.UserRole.CONTENT_ADMIN, enums_1.UserRole.SUPER_ADMIN),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
-    __param(1, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
+    __param(2, (0, common_1.Req)()),
+    __param(3, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, create_order_dto_1.CreateOrderDto]),
+    __metadata("design:paramtypes", [Object, Object, Object, create_order_dto_1.CreateOrderDto]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "create", null);
 __decorate([
@@ -56,6 +56,15 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('paypal/callback'),
+    __param(0, (0, common_1.Query)('token')),
+    __param(1, (0, common_1.Query)('PayerID')),
+    __param(2, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], OrdersController.prototype, "handlePayPalCallback", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

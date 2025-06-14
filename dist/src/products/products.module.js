@@ -15,7 +15,7 @@ const products_service_1 = require("./products.service");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const jwt_1 = require("@nestjs/jwt");
 const auth_module_1 = require("../auth/auth.module");
-const cloudinary_service_1 = require("../@core/shared/cloudinary.service");
+const cloudinary_service_1 = require("../shared/cloudinary.service");
 const review_entity_1 = require("../reviews/entities/review.entity");
 let ProductsModule = class ProductsModule {
 };

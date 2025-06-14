@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const product_entity_1 = require("./entities/product.entity");
 const typeorm_2 = require("typeorm");
-const cloudinary_service_1 = require("../@core/shared/cloudinary.service");
+const cloudinary_service_1 = require("../shared/cloudinary.service");
 let ProductsService = class ProductsService {
     productRepository;
     cloudinaryService;
@@ -69,7 +69,6 @@ let ProductsService = class ProductsService {
         groupedCounts.forEach((row) => {
             countsMap[row.status] = parseInt(row.count);
         });
-        console.log(products);
         return {
             message: 'Products found successfully',
             success: true,
@@ -103,22 +102,63 @@ let ProductsService = class ProductsService {
         };
     }
     async findOne(id) {
-        console.log(id);
-        const product = await this.productRepository.findOne({
-            where: { id },
-            relations: ['category', 'brand', 'reviews'],
-        });
-        console.log(product);
+        const product = await this.productRepository
+            .createQueryBuilder('product')
+            .leftJoinAndSelect('product.category', 'category')
+            .leftJoinAndSelect('product.brand', 'brand')
+            .leftJoinAndSelect('product.reviews', 'review')
+            .leftJoinAndSelect('review.user', 'user')
+            .addSelect([
+            'review.id',
+            'review.rating',
+            'review.comment',
+            'review.createdAt',
+            'user.id',
+            'user.firstName',
+            'user.lastName',
+        ])
+            .where('product.id = :id', { id })
+            .getOne();
         if (!product) {
             throw new common_1.NotFoundException('Product not found');
         }
+        console.log('product', {
+            ...product,
+            review: {
+                ...product.reviews,
+                user: product.reviews.map((review) => {
+                    return {
+                        id: review.user.id,
+                        firstName: review.user.firstName,
+                        lastName: review.user.lastName,
+                        status: review.user.status,
+                        image: review.user.profilePicture,
+                    };
+                }),
+            },
+        });
         if (product.status === 'disabled') {
             throw new common_1.BadRequestException('Product is disabled');
         }
         return {
             message: 'Product found successfully',
             success: true,
-            data: product,
+            data: {
+                ...product,
+                reviews: product.reviews.map((review) => ({
+                    id: review.id,
+                    rating: review.rating,
+                    comment: review.comment,
+                    createdAt: review.createdAt,
+                    user: {
+                        id: review.user.id,
+                        firstName: review.user.firstName,
+                        lastName: review.user.lastName,
+                        status: review.user.status,
+                        image: review.user.profilePicture,
+                    },
+                })),
+            },
         };
     }
     async update({ id }, updateProductDto) {
@@ -152,6 +192,16 @@ let ProductsService = class ProductsService {
             message: 'Product deleted successfully',
             success: true,
         };
+    }
+    updateStock(items) {
+        for (const item of items) {
+            this.productRepository
+                .createQueryBuilder()
+                .update(product_entity_1.Product)
+                .set({ stock: item.quantity })
+                .where('id = :id', { id: item.product.id })
+                .execute();
+        }
     }
 };
 exports.ProductsService = ProductsService;

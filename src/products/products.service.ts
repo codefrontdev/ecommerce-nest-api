@@ -16,6 +16,7 @@ import {
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetByIdDto } from './dto/get-by-id.dto';
 import { CloudinaryService } from 'src/shared/cloudinary.service';
+import { OrderItem } from 'src/orders/entities/order-item.entity';
 
 @Injectable()
 export class ProductsService {
@@ -103,7 +104,6 @@ export class ProductsService {
       countsMap[row.status] = parseInt(row.count);
     });
 
-    console.log(products);
     // إرجاع النتيجة
     return {
       message: 'Products found successfully',
@@ -142,16 +142,43 @@ export class ProductsService {
   }
 
   async findOne(id: string) {
-    console.log(id);
-    const product = await this.productRepository.findOne({
-      where: { id },
-      relations: ['category', 'brand', 'reviews'],
-    });
+    const product = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.brand', 'brand')
+      .leftJoinAndSelect('product.reviews', 'review')
+      .leftJoinAndSelect('review.user', 'user')
+      .addSelect([
+        'review.id',
+        'review.rating',
+        'review.comment',
+        'review.createdAt',
+        'user.id',
+        'user.firstName',
+        'user.lastName',
+      ])
+      .where('product.id = :id', { id })
+      .getOne();
 
-    console.log(product);
-    if (!product) {
-      throw new NotFoundException('Product not found');
-    }
+      
+      if (!product) {
+        throw new NotFoundException('Product not found');
+      }
+      console.log('product', {
+        ...product,
+        review: {
+          ...product.reviews,
+          user: product.reviews.map((review) => {
+            return {
+              id: review.user.id,
+              firstName: review.user.firstName,
+              lastName: review.user.lastName,
+              status: review.user.status,
+              image: review.user.profilePicture,
+            };
+          }),
+        },
+      });
     // Check if the product is disabled
     if (product.status === 'disabled') {
       throw new BadRequestException('Product is disabled');
@@ -160,8 +187,24 @@ export class ProductsService {
     return {
       message: 'Product found successfully',
       success: true,
-      data: product,
+      data: {
+        ...product,
+        reviews: product.reviews.map((review) => ({
+          id: review.id,
+          rating: review.rating,
+          comment: review.comment,
+          createdAt: review.createdAt,
+          user: {
+            id: review.user.id,
+            firstName: review.user.firstName,
+            lastName: review.user.lastName,
+            status: review.user.status,
+            image: review.user.profilePicture,
+          },
+        })),
+      },
     };
+    
   }
 
   async update({ id }: GetByIdDto, updateProductDto: UpdateProductDto) {
@@ -206,5 +249,15 @@ export class ProductsService {
       message: 'Product deleted successfully',
       success: true,
     };
+  }
+  updateStock(items: OrderItem[]) {
+    for (const item of items) {
+      this.productRepository
+        .createQueryBuilder()
+        .update(Product)
+        .set({ stock: item.quantity })
+        .where('id = :id', { id: item.product.id })
+        .execute();
+    }
   }
 }

@@ -13,6 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrdersService = void 0;
+const users_service_1 = require("../users/users.service");
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
@@ -20,67 +21,67 @@ const order_entity_1 = require("./entities/order.entity");
 const order_item_entity_1 = require("./entities/order-item.entity");
 const payment_entity_1 = require("../payments/entities/payment.entity");
 const tracking_entity_1 = require("../tracking/entities/tracking.entity");
-const invoice_service_1 = require("../invoice/invoice.service");
+const user_entity_1 = require("../users/entities/user.entity");
+const paypal_service_1 = require("./paypal.service");
+const auth_service_1 = require("../auth/auth.service");
+const order_helper_service_1 = require("./order-helper.service");
 let OrdersService = class OrdersService {
     ordersRepository;
     orderItemsRepository;
     paymentRepository;
     trackingRepository;
-    invoiceService;
-    constructor(ordersRepository, orderItemsRepository, paymentRepository, trackingRepository, invoiceService) {
+    usersService;
+    authService;
+    payPalService;
+    OrderHelperService;
+    constructor(ordersRepository, orderItemsRepository, paymentRepository, trackingRepository, usersService, authService, payPalService, OrderHelperService) {
         this.ordersRepository = ordersRepository;
         this.orderItemsRepository = orderItemsRepository;
         this.paymentRepository = paymentRepository;
         this.trackingRepository = trackingRepository;
-        this.invoiceService = invoiceService;
+        this.usersService = usersService;
+        this.authService = authService;
+        this.payPalService = payPalService;
+        this.OrderHelperService = OrderHelperService;
     }
-    async create(createOrderDto, payload) {
-        const { items, total, paymentMethod, amount, paymentDetails: paymentInfo, } = createOrderDto;
-        const userId = payload.id;
-        const order = this.ordersRepository.create({
-            user: { id: userId },
-            paymentMethod,
-            amount,
-            total,
-        });
-        const savedOrder = await this.ordersRepository.save(order);
-        if (items && items.length) {
-            const orderItems = items.map((item) => this.orderItemsRepository.create({
-                price: item.price,
-                quantity: item.quantity,
-                product: { id: item.productId },
-                order: savedOrder,
-            }));
-            await this.orderItemsRepository.save(orderItems);
+    async create(createOrderDto, req, res, payload) {
+        const user = await this.usersService.prepareUser(createOrderDto, payload);
+        const { accessToken, refreshToken } = await this.authService.prepareSessionTokens(req, user);
+        const { orderItems, subTotal, discountTotal } = await this.OrderHelperService.calculateOrderItems(createOrderDto.items);
+        const { shippingCharge, estimatedTax, totalAmount } = this.OrderHelperService.calculateOrderTotals(subTotal, discountTotal);
+        const order = await this.OrderHelperService.saveOrder(createOrderDto, user.id, subTotal, discountTotal, shippingCharge, estimatedTax, totalAmount);
+        await this.OrderHelperService.saveOrderItems(order, orderItems);
+        await this.OrderHelperService.createTrackingAndInvoice(order.id);
+        if (createOrderDto.paymentMethod === 'new_card' &&
+            createOrderDto.paymentDetails) {
+            await this.OrderHelperService.saveCardPayment(order, createOrderDto.paymentDetails);
         }
-        const paymentDetailsEntity = this.paymentRepository.create({
-            order: savedOrder,
-            paymentMethod,
-            cardHolderName: paymentInfo.cardHolderName,
-            cardNumber: paymentInfo.cardNumber,
-        });
-        await this.paymentRepository.save(paymentDetailsEntity);
-        const now = new Date();
-        const steps = [
-            {
-                status: 'Order Placed',
-                description: 'An order has been placed',
-                date: now.toISOString().split('T')[0],
-                time: now.toLocaleTimeString(),
-            },
-        ];
-        const tracking = this.trackingRepository.create({
-            order: savedOrder,
-            trackingNumber: `TRACK-${savedOrder.id}`,
-            steps,
-        });
-        await this.trackingRepository.save(tracking);
-        await this.invoiceService.create({ orderId: savedOrder.id });
+        if (createOrderDto.paymentMethod === 'paypal') {
+            return this.OrderHelperService.handlePaypalPayment(order, totalAmount, res, payload, accessToken, refreshToken);
+        }
         return {
-            data: savedOrder,
             message: 'Order created successfully',
             success: true,
+            data: order,
         };
+    }
+    async handlePayPalCallback(token, payerId, res) {
+        const order = await this.ordersRepository.findOne({
+            where: { transitionId: token },
+        });
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+        if (!order.transitionId) {
+            return res.status(400).send('Order transitionId is missing.');
+        }
+        const result = await this.payPalService.captureOrder(order.transitionId);
+        if (result.status !== 'COMPLETED') {
+            return res.status(400).send('Payment failed.');
+        }
+        order.status = order_entity_1.OrderStatus.COMPLETED;
+        await this.ordersRepository.save(order);
+        return res.redirect(`http://localhost:3000/order/${order.status.toLowerCase()}/${order.id}`);
     }
     async findOne(id) {
         const order = await this.ordersRepository
@@ -147,7 +148,7 @@ let OrdersService = class OrdersService {
             .take(pageSize)
             .orderBy('order.createdAt', sort === 'asc' ? 'ASC' : 'DESC');
         const [orders, total] = await qb.getManyAndCount();
-        const orderStatusCounts = this.calculateOrderStatusCounts(orders);
+        const orderStatusCounts = this.OrderHelperService.calculateOrderStatusCounts(orders);
         return {
             message: 'Orders found successfully',
             success: true,
@@ -180,38 +181,6 @@ let OrdersService = class OrdersService {
             success: true,
         };
     }
-    calculateOrderStatusCounts(orders) {
-        const orderStatusCounts = {
-            failed: {
-                abanded: 0,
-                returned: 0,
-                canceled: 0,
-                damaged: 0,
-            },
-            succeeded: {
-                total: 0,
-                pending: 0,
-                completed: 0,
-                progress: 0,
-            },
-        };
-        orders.forEach((order) => {
-            if (order.status === 'pending')
-                orderStatusCounts.succeeded.pending++;
-            if (order.status === 'completed')
-                orderStatusCounts.succeeded.completed++;
-            if (order.status === 'progress')
-                orderStatusCounts.succeeded.progress++;
-            if (order.status === 'returned')
-                orderStatusCounts.failed.returned++;
-            if (order.status === 'canceled')
-                orderStatusCounts.failed.canceled++;
-            if (order.status === 'damaged')
-                orderStatusCounts.failed.damaged++;
-            orderStatusCounts.succeeded.total++;
-        });
-        return orderStatusCounts;
-    }
 };
 exports.OrdersService = OrdersService;
 exports.OrdersService = OrdersService = __decorate([
@@ -220,10 +189,14 @@ exports.OrdersService = OrdersService = __decorate([
     __param(1, (0, typeorm_1.InjectRepository)(order_item_entity_1.OrderItem)),
     __param(2, (0, typeorm_1.InjectRepository)(payment_entity_1.PaymentDetails)),
     __param(3, (0, typeorm_1.InjectRepository)(tracking_entity_1.Tracking)),
+    __param(4, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
-        invoice_service_1.InvoiceService])
+        users_service_1.UsersService,
+        auth_service_1.AuthService,
+        paypal_service_1.PayPalService,
+        order_helper_service_1.OrderHelperService])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map

@@ -1,14 +1,15 @@
-import { UserRole, UserStatus } from 'src/@core/utils/enums';
+import { UserRole, UserStatus } from 'src/utils/enums';
 import { Comment } from 'src/comments/entites/comment.entity';
 import { DeviceHistory } from 'src/deviceHistory/entities/device-history.entity';
 import { Order } from 'src/orders/entities/order.entity';
 import { Review } from 'src/reviews/entities/review.entity';
+import { Wishlist } from 'src/wishlist/entities/wishlist.entity';
 export declare class User {
     id: string;
     firstName: string;
     lastName: string;
     email: string;
-    password: string;
+    password?: string;
     role: UserRole;
     comments: Comment[];
     phone: string;
@@ -28,6 +29,7 @@ export declare class User {
     deviceHistory: DeviceHistory[];
     orders: Order[];
     reviews: Review[];
+    wishlist: Wishlist[];
     createdAt: Date;
     updatedAt: Date;
 }

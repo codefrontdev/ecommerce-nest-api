@@ -1,4 +1,4 @@
-import { IsUUID, IsNumber, Min } from 'class-validator';
+import { IsUUID, IsNumber, Min, IsOptional, IsString } from 'class-validator';
 
 export class CreateOrderItemDto {
   @IsUUID()
@@ -10,4 +10,12 @@ export class CreateOrderItemDto {
 
   @IsNumber()
   price: number;
+
+  @IsOptional()
+  @IsString()
+  color?: string;
+
+  @IsOptional()
+  @IsString()
+  size?: string;
 }

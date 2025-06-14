@@ -18,7 +18,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
               url: databaseUrl,
               ssl: { rejectUnauthorized: false },
               autoLoadEntities: true,
-              synchronize: false, // ⛔️ لا تفعل هذا في الإنتاج
+              synchronize: true, // ⛔️ لا تفعل هذا في الإنتاج
               logging: false,
             }
           : {

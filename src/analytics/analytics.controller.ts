@@ -22,7 +22,6 @@ export class AnalyticsController {
 
   @Get('top-selling')
   getTopSelling(@Query('sortBy') sortBy: 'price' | 'Sold' | 'totalEarning') {
-    console.log('top selling', sortBy);
     return this.analyticsService.getTopSellingProducts(sortBy);
   }
 }

@@ -2,7 +2,7 @@ import { GetByIdDto } from './dto/get-by-id.dto';
 import { BrandsService } from './brands.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 export declare class BrandsController {
     private readonly BrandsService;
     private readonly cloudinaryService;

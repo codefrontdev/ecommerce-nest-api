@@ -13,14 +13,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InvoiceService = void 0;
-const email_service_1 = require("./../@core/shared/email.service");
+const email_service_1 = require("../shared/email.service");
 const common_1 = require("@nestjs/common");
 const invoice_entity_1 = require("./entities/invoice.entity");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const QRCode = require("qrcode");
-const orders_service_1 = require("../orders/orders.service");
+const orders_service_1 = require("../orders/services/orders.service");
 const puppeteer_1 = require("puppeteer");
+const functions_1 = require("../utils/functions");
 let InvoiceService = class InvoiceService {
     invoiceRepo;
     ordersService;
@@ -45,20 +46,6 @@ let InvoiceService = class InvoiceService {
             dueAt: new Date(),
             issuedAt: new Date(),
         };
-        const subTotal = order.data.total;
-        const discountValue = order.data.items
-            .filter((item) => item.product)
-            .reduce((acc, item) => {
-            const price = item.product.price || 0;
-            const discount = item.product.discount || 0;
-            const qty = item.quantity || 1;
-            const discountAmount = price * (discount / 100) * qty;
-            return acc + discountAmount;
-        }, 0)
-            .toFixed(2);
-        const shippingCharge = order.data?.total && order.data.total > 100 ? 0 : 15;
-        const estimatedTax = order.data?.total && order.data.total * 0.05;
-        const totalAmount = subTotal - +discountValue + shippingCharge + estimatedTax;
         const pdfBuffer = await this.generateInvoicePDF({
             ...invoiceData,
             customerName: order.data.user.firstName + ' ' + order.data.user.lastName,
@@ -68,10 +55,10 @@ let InvoiceService = class InvoiceService {
             paymentMethod: order.data.paymentMethod,
             items: order.data.items,
             subTotal: order.data.total,
-            discount: discountValue,
-            shippingCharge,
-            estimatedTax,
-            totalAmount,
+            discount: order.data.discount,
+            shippingCharge: order.data.shippingCharge,
+            estimatedTax: order.data.estimatedTax,
+            totalAmount: order.data.amount,
         });
         const qrCode = await QRCode.toDataURL(JSON.stringify({
             ...invoiceData,
@@ -86,11 +73,11 @@ let InvoiceService = class InvoiceService {
                 price: item.product.price,
                 total: item.product.price * item.quantity,
             })),
-            subTotal,
-            discount: discountValue,
-            shippingCharge,
-            estimatedTax,
-            totalAmount,
+            subTotal: order.data.total,
+            discount: order.data.discount,
+            shippingCharge: order.data.shippingCharge,
+            estimatedTax: order.data.estimatedTax,
+            totalAmount: order.data.amount,
         }));
         const invoice = this.invoiceRepo.create({
             ...invoiceData,
@@ -132,8 +119,8 @@ let InvoiceService = class InvoiceService {
           <div class="header">
             <h1>Invoice</h1>
             <p>Invoice #: ${orderData.invoiceNumber}</p>
-            <p>Issued At: ${orderData.issuedAt}</p>
-            <p>Due At: ${orderData.dueAt}</p>
+            <p>Issued At: ${(0, functions_1.formatDate)(orderData.issuedAt)}</p>
+            <p>Due At: ${(0, functions_1.formatDate)(orderData.dueAt)}</p>
           </div>
           <div class="details">
             <div class="left">
@@ -161,17 +148,17 @@ let InvoiceService = class InvoiceService {
               ${orderData.items
             .map((item) => `
                 <tr>
-                  <td>${item.name}</td>
+                  <td>${item.product.name}</td>
                   <td>${item.quantity}</td>
-                  <td>${item.price}</td>
-                  <td>${item.total}</td>
+                  <td>${item.product.price}</td>
+                  <td>${item.product.price * item.quantity}</td>
                 </tr>
               `)
             .join('')}
             </tbody>
           </table>
           <div class="total">
-            <p class="label">Subtotal: ${orderData.subtotal}</p>
+            <p class="label">Subtotal: ${orderData.subTotal}</p>
             <p class="label">Discount: ${orderData.discount}</p>
             <p class="label">Shipping Charge: ${orderData.shippingCharge}</p>
             <p class="label">Estimated Tax: ${orderData.estimatedTax}</p>
@@ -186,7 +173,6 @@ let InvoiceService = class InvoiceService {
   `;
         await page.setContent(htmlContent);
         const pdfBuffer = await page.pdf({
-            path: 'invoice.pdf',
             format: 'A4',
             printBackground: true,
         });

@@ -8,8 +8,10 @@ import {
   Delete,
   UseGuards,
   Query,
+  Res,
+  Req,
 } from '@nestjs/common';
-import { OrdersService } from './orders.service';
+import { OrdersService } from './services/orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity';
 import { JWTPayloadType } from 'src/utils/types';
@@ -17,19 +19,24 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Roles } from 'src/auth/decorators/user-role.decorator';
 import { UserRole } from 'src/utils/enums';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Request, Response } from 'express';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Roles(UserRole.ADMIN, UserRole.CONTENT_ADMIN, UserRole.SUPER_ADMIN)
-  @UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @CurrentUser() payload: JWTPayloadType,
+    @Res() res: Response,
+    @Req() req: Request,
     @Body() createOrderDto: CreateOrderDto,
-  ): Promise<{ message: string; success: boolean; data: Order }> {
-    return this.ordersService.create(createOrderDto, payload);
+  ): Promise<{
+    message: string;
+    success: boolean;
+    data: Order | { order: Order; paypalApprovalUrl: string };
+  }> {
+    return this.ordersService.create(createOrderDto, req, res, payload);
   }
 
   @Get()
@@ -51,6 +58,14 @@ export class OrdersController {
     data: Order[];
   }> {
     return this.ordersService.findAll(query);
+  }
+  @Get('paypal/callback')
+  async handlePayPalCallback(
+    @Query('token') token: string,
+    @Query('PayerID') payerId: string,
+    @Res() res: Response,
+  ) {
+    return this.ordersService.handlePayPalCallback(token, payerId, res);
   }
 
   @Get(':id')

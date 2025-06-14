@@ -54,7 +54,6 @@ export class DeviceHistoryService {
     });
 
     const result = await this.deviceHistoryRepository.save(deviceHistory);
-    console.log('result', result);
     return result;
   }
 

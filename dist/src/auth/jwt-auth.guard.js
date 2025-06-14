@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtAuthGuard = void 0;
 const common_1 = require("@nestjs/common");
-const constants_1 = require("../@core/utils/constants");
+const constants_1 = require("../utils/constants");
 const auth_service_1 = require("./auth.service");
 const core_1 = require("@nestjs/core");
 let JwtAuthGuard = class JwtAuthGuard {
@@ -33,12 +33,8 @@ let JwtAuthGuard = class JwtAuthGuard {
         }
         const accessToken = request.cookies['accessToken'];
         const refreshToken = request.cookies['refreshToken'];
-        if (!accessToken) {
+        if (!accessToken || !refreshToken)
             return false;
-        }
-        if (!refreshToken) {
-            return false;
-        }
         try {
             const result = await this.authService.verifyToken(accessToken);
             if (!result) {

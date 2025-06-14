@@ -12,7 +12,7 @@ const user_controller_1 = require("./user.controller");
 const users_service_1 = require("./users.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./entities/user.entity");
-const cloudinary_service_1 = require("../@core/shared/cloudinary.service");
+const cloudinary_service_1 = require("../shared/cloudinary.service");
 const auth_module_1 = require("../auth/auth.module");
 let UsersModule = class UsersModule {
 };

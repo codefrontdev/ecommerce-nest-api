@@ -19,7 +19,7 @@ const auth_service_1 = require("./auth.service");
 const jwt_auth_guard_1 = require("./jwt-auth.guard");
 const current_user_decorator_1 = require("./decorators/current-user.decorator");
 const user_role_decorator_1 = require("./decorators/user-role.decorator");
-const enums_1 = require("../@core/utils/enums");
+const enums_1 = require("../utils/enums");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {

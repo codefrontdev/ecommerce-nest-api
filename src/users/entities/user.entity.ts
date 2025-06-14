@@ -12,6 +12,7 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
+import { Wishlist } from 'src/wishlist/entities/wishlist.entity';
 
 @Entity()
 @Unique(['email'])
@@ -28,8 +29,8 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
-  password: string;
+  @Column({ nullable: true })
+  password?: string;
 
   @Column({
     type: 'enum',
@@ -38,6 +39,7 @@ export class User {
       UserRole.CUSTOMER,
       UserRole.SUPER_ADMIN,
       UserRole.CONTENT_ADMIN,
+      UserRole.GEST,
     ],
     default: UserRole.CUSTOMER,
   })
@@ -96,6 +98,9 @@ export class User {
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.user)
+  wishlist: Wishlist[];
 
   @CreateDateColumn()
   createdAt: Date;

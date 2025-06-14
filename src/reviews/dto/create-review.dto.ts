@@ -6,6 +6,7 @@ import {
   ValidateNested,
   IsUUID,
   IsArray,
+  IsEmail,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -23,6 +24,7 @@ class CommentDto {
   images?: string[];
 }
 
+
 export class CreateReviewDto {
   @IsInt()
   rating: number;
@@ -31,11 +33,20 @@ export class CreateReviewDto {
   @Type(() => CommentDto)
   comment: CommentDto;
 
+  @IsString()
+  @IsNotEmpty()
+  username: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
   @IsUUID()
   @IsNotEmpty()
   productId: string;
 
   @IsUUID()
   @IsNotEmpty()
-  userId: string;
+  @IsOptional()
+  userId?: string;
 }

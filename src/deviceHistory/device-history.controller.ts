@@ -64,7 +64,6 @@ export class DeviceHistoryController {
     @CurrentUser() JWTpayload: JWTPayloadType,
   ) {
     const userId = JWTpayload.id;
-    console.log('userId', userId);
     return this.deviceHistoryService.logoutFromDevice(deviceId, JWTpayload);
   }
 }

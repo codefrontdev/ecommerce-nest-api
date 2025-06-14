@@ -1,8 +1,8 @@
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JWTPayloadType } from 'src/@core/utils/types';
+import { JWTPayloadType } from 'src/utils/types';
 export declare class UsersController {
     private readonly usersService;
     private readonly cloudinaryService;

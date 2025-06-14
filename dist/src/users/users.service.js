@@ -18,6 +18,7 @@ const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
 const bcrypt = require("bcrypt");
 const user_entity_1 = require("./entities/user.entity");
+const enums_1 = require("../utils/enums");
 let UsersService = class UsersService {
     userRepository;
     constructor(userRepository) {
@@ -99,7 +100,6 @@ let UsersService = class UsersService {
         return user;
     }
     async update(id, updateUserDto) {
-        console.log('updateUserDto', updateUserDto);
         const newData = {
             ...updateUserDto,
         };
@@ -119,8 +119,41 @@ let UsersService = class UsersService {
         const result = await this.userRepository.update(id, {
             ...updateUserDto,
         });
-        console.log(result);
         return result;
+    }
+    async prepareUser(dto, payload) {
+        const userId = payload?.id;
+        let user = userId
+            ? await this.userRepository.findOne({ where: { id: userId } })
+            : dto.email
+                ? await this.userRepository.findOneBy({ email: dto.email })
+                : null;
+        if (!user && !dto.email)
+            throw new Error('User ID or email must be provided');
+        if (!user) {
+            user = this.userRepository.create({
+                firstName: dto.firstName || 'Guest User',
+                lastName: dto.lastName || '',
+                email: dto.email,
+                country: dto.country,
+                city: dto.city,
+                postalCode: dto.zip,
+                address: dto.address,
+                phone: dto.phone,
+                role: enums_1.UserRole.GEST,
+                status: enums_1.UserStatus.INACTIVE,
+            });
+        }
+        else {
+            user = Object.assign(user, {
+                phone: user.phone || dto.phone,
+                country: user.country || dto.country,
+                city: user.city || dto.city,
+                postalCode: user.postalCode || dto.zip,
+                address: user.address || dto.address,
+            });
+        }
+        return this.userRepository.save(user);
     }
     async remove(id) {
         await this.findOne(id);

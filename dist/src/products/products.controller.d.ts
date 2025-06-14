@@ -2,7 +2,7 @@ import { ProductsService } from './products.service';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { GetByIdDto } from './dto/get-by-id.dto';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 export declare class ProductsController {
     private readonly productsService;
     private readonly cloudinaryService;
@@ -43,7 +43,61 @@ export declare class ProductsController {
     findOne(id: string): Promise<{
         message: string;
         success: boolean;
-        data: import("./entities/product.entity").Product;
+        data: {
+            reviews: {
+                id: string;
+                rating: number;
+                comment: {
+                    title: string;
+                    body: string;
+                    images?: string[];
+                };
+                createdAt: Date;
+                user: {
+                    id: string;
+                    firstName: string;
+                    lastName: string;
+                    status: import("src/utils/enums").UserStatus;
+                    image: {
+                        publicId: string;
+                        url: string;
+                    };
+                };
+            }[];
+            id: string;
+            name: string;
+            description: string;
+            category: import("../categories/entites/category.entity").Category;
+            categoryId: string;
+            brand: import("../brands/entites/brand.entity").Brand;
+            brandId: string;
+            tags: string[];
+            shortDescription: string;
+            status: string;
+            visibility: string;
+            publishDate: Date;
+            manufacturerName: string;
+            manufacturerBrand: string;
+            stock: number;
+            price: number;
+            discount: number;
+            orders: number;
+            image: {
+                url: string;
+                publicId: string | null;
+            };
+            images?: {
+                url: string;
+                publicId: string;
+            }[];
+            orderItems: import("../orders/entities/order-item.entity").OrderItem[];
+            colors: string[];
+            sizes: string[];
+            attributes: string[];
+            attributesValues: string[];
+            createdAt: Date;
+            updatedAt: Date;
+        };
     }>;
     update(id: GetByIdDto, files: {
         image?: Express.Multer.File[];

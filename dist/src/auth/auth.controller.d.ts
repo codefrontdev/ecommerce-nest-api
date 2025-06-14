@@ -1,7 +1,7 @@
 import { SignInUserDto } from './dto/signin-user.dto';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
-import { JWTPayloadType } from 'src/@core/utils/types';
+import { JWTPayloadType } from 'src/utils/types';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);

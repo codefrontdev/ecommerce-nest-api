@@ -14,7 +14,6 @@ export class EmailService {
      const user = this.configService.get<string>('EMAIL_SENDER');
      const pass = this.configService.get<string>('EMAIL_PASSWORD');
 
-     console.log({ host, port, secure, user }); // تأكيد التحميل
 
      this.transporter = nodemailer.createTransport({
        host,
@@ -104,11 +103,7 @@ const htmlMessage = `
       text: message,
       html: htmlMessage,
     };
-    console.log({
-      host: this.configService.get<string>('MAIL_HOST'),
-      port: this.configService.get<string>('MAIL_PORT'),
-      secure: this.configService.get<string>('MAIL_SECURE'),
-    });
+    
 
     if (attachPdf && pdfBuffer) {
       mailOptions.attachments = [
@@ -119,7 +114,7 @@ const htmlMessage = `
         },
       ];
     }
-    console.log(mailOptions);
+    
     try {
       const info = await this.transporter.sendMail(mailOptions);
       console.log(info);

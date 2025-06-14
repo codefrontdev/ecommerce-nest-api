@@ -30,7 +30,6 @@ let AnalyticsController = class AnalyticsController {
         return this.analyticsService.getSalesByCategory(period);
     }
     getTopSelling(sortBy) {
-        console.log('top selling', sortBy);
         return this.analyticsService.getTopSellingProducts(sortBy);
     }
 };

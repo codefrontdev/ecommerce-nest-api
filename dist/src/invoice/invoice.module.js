@@ -14,13 +14,17 @@ const typeorm_1 = require("@nestjs/typeorm");
 const invoice_entity_1 = require("./entities/invoice.entity");
 const auth_module_1 = require("../auth/auth.module");
 const orders_module_1 = require("../orders/orders.module");
-const email_service_1 = require("../@core/shared/email.service");
+const email_service_1 = require("../shared/email.service");
 let InvoiceModule = class InvoiceModule {
 };
 exports.InvoiceModule = InvoiceModule;
 exports.InvoiceModule = InvoiceModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([invoice_entity_1.Invoice]), auth_module_1.AuthModule, (0, common_1.forwardRef)(() => orders_module_1.OrdersModule)],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([invoice_entity_1.Invoice]),
+            auth_module_1.AuthModule,
+            (0, common_1.forwardRef)(() => orders_module_1.OrdersModule),
+        ],
         controllers: [invoice_controller_1.InvoiceController],
         providers: [invoice_service_1.InvoiceService, email_service_1.EmailService],
         exports: [invoice_service_1.InvoiceService],

@@ -7,8 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from 'src/orders/entities/order.entity';
 import * as QRCode from 'qrcode';
-import { OrdersService } from 'src/orders/orders.service';
+import { OrdersService } from 'src/orders/services/orders.service';
 import puppeteer from 'puppeteer';
+import { formatDate } from 'src/utils/functions';
 
 @Injectable()
 export class InvoiceService {
@@ -40,22 +41,6 @@ export class InvoiceService {
       issuedAt: new Date(),
     };
 
-    const subTotal = order.data.total;
-    const discountValue = order.data.items
-      .filter((item) => item.product)
-      .reduce((acc, item) => {
-        const price = item.product.price || 0;
-        const discount = item.product.discount || 0;
-        const qty = item.quantity || 1;
-        const discountAmount = price * (discount / 100) * qty;
-        return acc + discountAmount;
-      }, 0)
-      .toFixed(2);
-    const shippingCharge = order.data?.total && order.data.total > 100 ? 0 : 15;
-    const estimatedTax = order.data?.total && order.data.total * 0.05;
-    const totalAmount =
-      subTotal - +discountValue + shippingCharge + estimatedTax;
-
     const pdfBuffer = await this.generateInvoicePDF({
       ...invoiceData,
       customerName: order.data.user.firstName + ' ' + order.data.user.lastName,
@@ -63,12 +48,14 @@ export class InvoiceService {
       customerPhone: order.data.user.phone,
       customerAddress: order.data.user.address,
       paymentMethod: order.data.paymentMethod,
+
       items: order.data.items,
+
       subTotal: order.data.total,
-      discount: discountValue,
-      shippingCharge,
-      estimatedTax,
-      totalAmount,
+      discount: order.data.discount,
+      shippingCharge: order.data.shippingCharge,
+      estimatedTax: order.data.estimatedTax,
+      totalAmount: order.data.amount,
     });
 
     const qrCode = await QRCode.toDataURL(
@@ -86,13 +73,14 @@ export class InvoiceService {
           price: item.product.price,
           total: item.product.price * item.quantity,
         })),
-        subTotal,
-        discount: discountValue,
-        shippingCharge,
-        estimatedTax,
-        totalAmount,
+        subTotal: order.data.total,
+        discount: order.data.discount,
+        shippingCharge: order.data.shippingCharge,
+        estimatedTax: order.data.estimatedTax,
+        totalAmount: order.data.amount,
       }),
     );
+    // update order
     const invoice = this.invoiceRepo.create({
       ...invoiceData,
       order: { id: invoiceData.orderId },
@@ -109,7 +97,6 @@ export class InvoiceService {
     });
     const page = await browser.newPage();
 
-    // تنسيق HTML مع البيانات
     const htmlContent = `
     <html>
       <head>
@@ -136,8 +123,8 @@ export class InvoiceService {
           <div class="header">
             <h1>Invoice</h1>
             <p>Invoice #: ${orderData.invoiceNumber}</p>
-            <p>Issued At: ${orderData.issuedAt}</p>
-            <p>Due At: ${orderData.dueAt}</p>
+            <p>Issued At: ${formatDate(orderData.issuedAt)}</p>
+            <p>Due At: ${formatDate(orderData.dueAt)}</p>
           </div>
           <div class="details">
             <div class="left">
@@ -166,10 +153,10 @@ export class InvoiceService {
                 .map(
                   (item) => `
                 <tr>
-                  <td>${item.name}</td>
+                  <td>${item.product.name}</td>
                   <td>${item.quantity}</td>
-                  <td>${item.price}</td>
-                  <td>${item.total}</td>
+                  <td>${item.product.price}</td>
+                  <td>${item.product.price * item.quantity}</td>
                 </tr>
               `,
                 )
@@ -177,7 +164,7 @@ export class InvoiceService {
             </tbody>
           </table>
           <div class="total">
-            <p class="label">Subtotal: ${orderData.subtotal}</p>
+            <p class="label">Subtotal: ${orderData.subTotal}</p>
             <p class="label">Discount: ${orderData.discount}</p>
             <p class="label">Shipping Charge: ${orderData.shippingCharge}</p>
             <p class="label">Estimated Tax: ${orderData.estimatedTax}</p>
@@ -191,18 +178,13 @@ export class InvoiceService {
     </html>
   `;
 
-    // تحميل المحتوى في الصفحة
     await page.setContent(htmlContent);
-
-    // إنشاء PDF
     const pdfBuffer = await page.pdf({
-      path: 'invoice.pdf',
       format: 'A4',
       printBackground: true,
     });
 
     await browser.close();
-
     return pdfBuffer;
   }
 

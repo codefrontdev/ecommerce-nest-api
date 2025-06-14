@@ -17,47 +17,86 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const review_entity_1 = require("./entities/review.entity");
 const typeorm_2 = require("typeorm");
+const users_service_1 = require("../users/users.service");
 let ReviewService = class ReviewService {
     reviewRepository;
-    constructor(reviewRepository) {
+    usersService;
+    constructor(reviewRepository, usersService) {
         this.reviewRepository = reviewRepository;
+        this.usersService = usersService;
     }
     async create(createReviewDto) {
+        console.log('createReviewDto', createReviewDto);
+        let user = await this.usersService.findOneByEmail(createReviewDto.email);
+        if (!createReviewDto.userId && !user) {
+            user = await this.usersService.prepareUser({
+                firstName: createReviewDto.username.split(' ')[0] || '',
+                lastName: createReviewDto.username.split(' ')[1] || '',
+                email: createReviewDto.email,
+            });
+        }
         const review = this.reviewRepository.create({
             ...createReviewDto,
-            user: { id: createReviewDto.userId },
+            user: { id: createReviewDto.userId || user.id },
             product: { id: createReviewDto.productId },
         });
-        return this.reviewRepository.save(review);
+        await this.reviewRepository.save(review);
+        return {
+            message: 'Review created successfully',
+            success: true,
+            data: review,
+        };
     }
     async findAll() {
-        return this.reviewRepository.find({
+        const reviews = await this.reviewRepository.find({
             relations: ['user', 'product'],
             order: { createdAt: 'DESC' },
         });
+        return {
+            message: 'Reviews found successfully',
+            success: true,
+            data: reviews,
+        };
     }
     async findByUser(userId) {
-        return this.reviewRepository.find({
+        const reviews = await this.reviewRepository.find({
             where: { user: { id: userId } },
-            relations: ['product'],
+            relations: ['user', 'product'],
             order: { createdAt: 'DESC' },
         });
+        return {
+            message: 'Reviews found successfully',
+            success: true,
+            data: reviews,
+        };
     }
     async updateReiew(id, updateReviewDto) {
         const review = await this.reviewRepository.findOne({ where: { id } });
         if (!review)
             throw new common_1.NotFoundException('Review not found');
-        return this.reviewRepository.save({
-            ...review,
-            ...updateReviewDto,
+        await this.reviewRepository.update(id, updateReviewDto);
+        const updatedReview = await this.reviewRepository.findOne({
+            where: { id },
         });
+        if (!updatedReview)
+            throw new common_1.NotFoundException('Updated review not found');
+        return {
+            message: 'Review updated successfully',
+            success: true,
+            data: updatedReview,
+        };
     }
     async findByProduct(productId) {
-        return this.reviewRepository.find({
+        const reviews = await this.reviewRepository.find({
             where: { product: { id: productId } },
-            relations: ['user'],
+            relations: ['user', 'product'],
             order: { createdAt: 'DESC' },
         });
+        return {
+            message: 'Reviews found successfully',
+            success: true,
+            data: reviews,
+        };
     }
     async remove(id) {
         const review = await this.reviewRepository.findOne({ where: { id } });
@@ -70,6 +109,7 @@ exports.ReviewService = ReviewService;
 exports.ReviewService = ReviewService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(review_entity_1.Review)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        users_service_1.UsersService])
 ], ReviewService);
 //# sourceMappingURL=review.service.js.map

@@ -3,7 +3,7 @@ import { GetByIdDto } from './dto/get-by-id.dto';
 import { Brand } from './entites/brand.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
-import { CloudinaryService } from 'src/@core/shared/cloudinary.service';
+import { CloudinaryService } from 'src/shared/cloudinary.service';
 export declare class BrandsService {
     private readonly brandRepository;
     private readonly cloudinaryService;

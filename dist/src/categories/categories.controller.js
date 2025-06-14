@@ -16,11 +16,11 @@ exports.categoriesController = void 0;
 const common_1 = require("@nestjs/common");
 const categories_service_1 = require("./categories.service");
 const user_role_decorator_1 = require("../auth/decorators/user-role.decorator");
-const enums_1 = require("../@core/utils/enums");
+const enums_1 = require("../utils/enums");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const update_category_dto_1 = require("./dto/update-category.dto");
 const create_category_dto_1 = require("./dto/create-category.dto");
-const parse_uuid_pipe_1 = require("../@core/pipes/parse-uuid.pipe");
+const parse_uuid_pipe_1 = require("../pipes/parse-uuid.pipe");
 const get_by_id_dto_1 = require("./dto/get-by-id.dto");
 let categoriesController = class categoriesController {
     categoriesService;

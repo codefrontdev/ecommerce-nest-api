@@ -3,7 +3,7 @@ import { Product } from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
 import { Analytics } from './entities/analytics.entity';
 import { DeviceHistory } from 'src/deviceHistory/entities/device-history.entity';
-import { SalesData } from 'src/@core/utils/types';
+import { SalesData } from 'src/utils/types';
 export declare class AnalyticsService {
     private readonly orderRepository;
     private readonly productRepository;

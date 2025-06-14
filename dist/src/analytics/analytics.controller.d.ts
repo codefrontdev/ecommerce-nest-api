@@ -41,7 +41,7 @@ export declare class AnalyticsController {
         success: boolean;
         data: {
             period: "weekly" | "monthly" | "yearly";
-            sales: import("../@core/utils/types").SalesData[];
+            sales: import("../utils/types").SalesData[];
         };
     }>;
     getSalesByCategory(period: 'weekly' | 'monthly' | 'yearly'): Promise<{

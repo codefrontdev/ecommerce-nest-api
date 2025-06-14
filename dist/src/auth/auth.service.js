@@ -19,15 +19,15 @@ const typeorm_2 = require("@nestjs/typeorm");
 const bcrypt = require("bcrypt");
 const user_entity_1 = require("../users/entities/user.entity");
 const users_service_1 = require("../users/users.service");
-const email_service_1 = require("../@core/shared/email.service");
+const email_service_1 = require("../shared/email.service");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const device_history_service_1 = require("../deviceHistory/device-history.service");
-const device_utils_1 = require("../@core/utils/device-utils");
+const device_utils_1 = require("../utils/device-utils");
 const axios_1 = require("axios");
-const rabbitmq_service_1 = require("../@core/shared/rabbitmq.service");
+const rabbitmq_service_1 = require("../shared/rabbitmq.service");
 const ioredis_1 = require("ioredis");
-const enums_1 = require("../@core/utils/enums");
+const enums_1 = require("../utils/enums");
 let AuthService = class AuthService {
     userRepository;
     emailService;
@@ -119,6 +119,10 @@ let AuthService = class AuthService {
     }
     async isPasswordValid(inputPassword, storedPassword) {
         return await bcrypt.compare(inputPassword, storedPassword);
+    }
+    async prepareSessionTokens(req, user) {
+        const deviceInfo = await this.collectDeviceInfo(req, user);
+        return await this.createTokens(user, parseInt(req.ip || '0', 10) || null, deviceInfo.id);
     }
     async collectDeviceInfo(req, user) {
         const userAgent = req.headers['user-agent'] || '';
